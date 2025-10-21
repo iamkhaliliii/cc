@@ -109,52 +109,57 @@ export default function BusinessHome() {
     let controls: { stop: () => void } | null = null;
 
     const startScanning = async () => {
-      if (scanning && videoRef.current && selectedDeviceId) {
+      if (scanning && videoRef.current) {
         try {
           if (!codeReaderRef.current) {
             codeReaderRef.current = new BrowserQRCodeReader();
           }
+
+          console.log('Starting scanner with deviceId:', selectedDeviceId);
           
-          // Better constraints for mobile
-          const constraints = {
-            video: {
-              deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-              facingMode: selectedDeviceId ? undefined : { ideal: 'environment' },
-              width: { ideal: 1280 },
-              height: { ideal: 720 }
-            }
-          };
+          // Use deviceId if available, otherwise let browser choose (preferring back camera)
+          const deviceToUse = selectedDeviceId || undefined;
           
           controls = await codeReaderRef.current.decodeFromVideoDevice(
-            selectedDeviceId,
+            deviceToUse,
             videoRef.current,
             (result) => {
               if (result && isActive) {
                 try {
                   const data = JSON.parse(result.getText());
+                  console.log('QR Code scanned:', data);
                   if (data.type === "customer") {
                     setScannedData(data);
                     setScanning(false);
+                  } else {
+                    console.log('Invalid QR type:', data.type);
                   }
                 } catch (err) {
-                  console.error("Invalid QR code:", err);
+                  console.error("Invalid QR code format:", err);
                 }
               }
             }
           );
 
-          // Ensure video plays on mobile
-          if (videoRef.current) {
-            videoRef.current.setAttribute('autoplay', '');
-            videoRef.current.setAttribute('playsinline', '');
+          console.log('Scanner started successfully');
+
+          // Ensure video plays on mobile - do this after decoding starts
+          await new Promise(resolve => setTimeout(resolve, 100));
+          if (videoRef.current && videoRef.current.srcObject) {
             videoRef.current.play().catch((e) => {
-              console.log('Error playing video:', e);
+              console.log('Video play error:', e);
             });
           }
         } catch (error) {
           console.error("Error starting scanner:", error);
-          setPermissionError("خطا در شروع دوربین. لطفاً مجدد تلاش کنید.");
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          setPermissionError(`خطا در شروع دوربین: ${errorMessage}`);
           setScanning(false);
+          
+          // If camera fails, suggest fallback
+          if (errorMessage.includes('Permission') || errorMessage.includes('NotAllowed')) {
+            setPermissionError("دسترسی به دوربین رد شد. از حالت آپلود تصویر استفاده کنید.");
+          }
         }
       }
     };
