@@ -6,17 +6,17 @@ import "../lib/init-db";
 const vazirmatn = localFont({
   src: [
     {
-      path: "../../node_modules/vazirmatn/Vazirmatn-Regular.woff2",
+      path: "../../node_modules/vazirmatn/misc/Farsi-Digits/fonts/webfonts/Vazirmatn-FD-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../node_modules/vazirmatn/Vazirmatn-Medium.woff2",
+      path: "../../node_modules/vazirmatn/misc/Farsi-Digits/fonts/webfonts/Vazirmatn-FD-Medium.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../node_modules/vazirmatn/Vazirmatn-Bold.woff2",
+      path: "../../node_modules/vazirmatn/misc/Farsi-Digits/fonts/webfonts/Vazirmatn-FD-Bold.woff2",
       weight: "700",
       style: "normal",
     },
