@@ -189,11 +189,41 @@ export default function BusinessHome() {
     // Request camera permission first
     if (cameraPermission !== 'granted') {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // Request with facingMode for mobile back camera
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          } 
+        });
+        
         // Stop the stream immediately, we just needed permission
         stream.getTracks().forEach(track => track.stop());
+        
+        // Update permission state
         setCameraPermission('granted');
-        setScanning(true);
+        
+        // Get updated device list with labels
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoInputs = devices.filter(device => device.kind === 'videoinput');
+        setVideoDevices(videoInputs);
+        
+        // Select back camera if available
+        const backCamera = videoInputs.find(device => 
+          device.label.toLowerCase().includes('back') || 
+          device.label.toLowerCase().includes('rear') ||
+          device.label.toLowerCase().includes('environment')
+        );
+        
+        if (backCamera && backCamera.deviceId) {
+          setSelectedDeviceId(backCamera.deviceId);
+        } else if (videoInputs.length > 0) {
+          setSelectedDeviceId(videoInputs[videoInputs.length - 1].deviceId);
+        }
+        
+        // Start scanning
+        setTimeout(() => setScanning(true), 100);
       } catch (error) {
         console.error('Camera permission denied:', error);
         setPermissionError("دسترسی به دوربین رد شد. لطفاً از تنظیمات مرورگر دسترسی دوربین را فعال کنید.");
@@ -419,9 +449,19 @@ export default function BusinessHome() {
               </svg>
               عکس گرفتن یا انتخاب از گالری
             </button>
-            <p className="text-xs text-slate-500">
-              دوربین مستقیم در این دستگاه/مرورگر پشتیبانی نمی‌شود
-            </p>
+            
+            {/* Switch back to camera mode */}
+            {cameraPermission !== 'denied' && (
+              <button
+                onClick={() => setUseFallbackMode(false)}
+                className="w-full text-slate-600 hover:text-slate-700 text-sm font-medium py-2 flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                </svg>
+                بازگشت به حالت دوربین مستقیم
+              </button>
+            )}
           </div>
         )}
 
@@ -468,6 +508,21 @@ export default function BusinessHome() {
                cameraPermission === 'prompt' ? 'درخواست دسترسی و شروع' :
                'دسترسی دوربین غیرفعال'}
             </button>
+
+            {/* Switch to Upload Mode */}
+            {cameraPermission !== 'denied' && (
+              <div className="pt-3 border-t border-slate-100">
+                <button
+                  onClick={() => setUseFallbackMode(true)}
+                  className="w-full text-blue-600 hover:text-blue-700 text-sm font-medium py-2 flex items-center justify-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  ترجیح میدهم از گالری انتخاب کنم
+                </button>
+              </div>
+            )}
           </div>
         )}
 
