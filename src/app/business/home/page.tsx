@@ -93,7 +93,7 @@ export default function BusinessHome() {
 
   useEffect(() => {
     let isActive = true;
-    let controls: any = null;
+    let controls: { stop: () => void } | null = null;
 
     const startScanning = async () => {
       if (scanning && videoRef.current && selectedDeviceId) {
@@ -141,10 +141,11 @@ export default function BusinessHome() {
         }
       }
       // Stop all video tracks
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
+      const video = videoRef.current;
+      if (video && video.srcObject) {
+        const stream = video.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
-        videoRef.current.srcObject = null;
+        video.srcObject = null;
       }
     };
   }, [scanning, selectedDeviceId]);
