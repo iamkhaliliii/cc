@@ -396,8 +396,24 @@ function QRCodeTab({ user }: { user: User }) {
             </svg>
           </div>
           <div className="text-sm text-blue-800">
-            <p className="font-semibold mb-1">نحوه استفاده:</p>
-            <p>این کد QR را در هنگام خرید به فروشنده نشان دهید تا امتیاز کسب کنید.</p>
+            <p className="font-semibold mb-2">نحوه استفاده:</p>
+            
+            <div className="space-y-2">
+              <div>
+                <p className="font-medium mb-1">📱 در فروشگاه:</p>
+                <p className="text-xs">این صفحه را به فروشنده نشان دهید تا QR را اسکن کنند</p>
+              </div>
+              
+              <div className="pt-2 border-t border-blue-200">
+                <p className="font-medium mb-1">💾 برای استفاده آسان‌تر:</p>
+                <p className="text-xs">روی "ذخیره" کلیک کنید و QR را در گالری ذخیره کنید. بعداً می‌توانید تصویر را به فروشنده نشان دهید.</p>
+              </div>
+
+              <div className="pt-2 border-t border-blue-200">
+                <p className="font-medium mb-1">📤 ارسال به دیگران:</p>
+                <p className="text-xs">از دکمه "اشتراک" برای ارسال QR به فروشگاه از قبل استفاده کنید.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
