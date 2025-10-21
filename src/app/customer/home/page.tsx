@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import QRCode from "qrcode";
 
-type Tab = "home" | "points" | "profile";
+type Tab = "home" | "points" | "qrcode" | "profile";
 
 interface User {
   id: number;
@@ -39,12 +40,13 @@ export default function CustomerHome() {
       <div className="h-[calc(100vh-5rem)] overflow-y-auto">
         {activeTab === "home" && <HomeTab user={user} />}
         {activeTab === "points" && <PointsTab user={user} />}
+        {activeTab === "qrcode" && <QRCodeTab user={user} />}
         {activeTab === "profile" && <ProfileTab user={user} />}
       </div>
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg">
-        <div className="flex justify-around items-center h-20 max-w-lg mx-auto px-4">
+        <div className="flex justify-around items-center h-20 max-w-lg mx-auto px-2">
           <button
             onClick={() => setActiveTab("home")}
             className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
@@ -71,6 +73,20 @@ export default function CustomerHome() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="text-xs font-medium">امتیاز</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("qrcode")}
+            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
+              activeTab === "qrcode"
+                ? "text-blue-600"
+                : "text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+            </svg>
+            <span className="text-xs font-medium">کد من</span>
           </button>
 
           <button
@@ -190,6 +206,113 @@ function PointsTab({ user }: { user: User }) {
               <p className="font-medium text-slate-800">معرفی به دوستان</p>
               <p className="text-sm text-slate-500">هر نفر = ۵۰ امتیاز</p>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QRCodeTab({ user }: { user: User }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [brightness, setBrightness] = useState(1);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      // Generate QR code with user ID
+      const qrData = JSON.stringify({
+        userId: user.id,
+        phone: user.phone,
+        name: user.name,
+        type: "customer"
+      });
+
+      QRCode.toCanvas(
+        canvasRef.current,
+        qrData,
+        {
+          width: 280,
+          margin: 2,
+          color: {
+            dark: "#1e40af",
+            light: "#ffffff"
+          }
+        },
+        (error) => {
+          if (error) console.error("QR Code error:", error);
+        }
+      );
+    }
+  }, [user]);
+
+  // Increase brightness for scanning
+  const handleBrightnessToggle = () => {
+    setBrightness(brightness === 1 ? 1.5 : 1);
+  };
+
+  return (
+    <div className="p-4 space-y-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
+      {/* QR Code Card */}
+      <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 max-w-sm w-full">
+        <div className="text-center mb-6">
+          <div className="bg-gradient-to-br from-blue-600 to-purple-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">کد من</h2>
+          <p className="text-slate-600 text-sm">
+            این کد را در فروشگاه‌ها اسکن کنید
+          </p>
+        </div>
+
+        {/* QR Code Display */}
+        <div 
+          className="bg-white p-6 rounded-2xl border-4 border-blue-100 mb-6 flex items-center justify-center"
+          style={{ filter: `brightness(${brightness})` }}
+        >
+          <canvas ref={canvasRef} className="max-w-full h-auto" />
+        </div>
+
+        {/* User Info */}
+        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-slate-600">نام:</span>
+            <span className="font-bold text-slate-800">{user.name}</span>
+          </div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-slate-600">شماره تماس:</span>
+            <span className="font-medium text-slate-800" dir="ltr">{user.phone}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-slate-600">امتیاز فعلی:</span>
+            <span className="font-bold text-blue-600">{user.points?.toLocaleString('fa-IR')}</span>
+          </div>
+        </div>
+
+        {/* Brightness Toggle */}
+        <button
+          onClick={handleBrightnessToggle}
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <span>{brightness === 1 ? "افزایش روشنایی" : "کاهش روشنایی"}</span>
+        </button>
+      </div>
+
+      {/* Instructions */}
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 max-w-sm w-full">
+        <div className="flex gap-3">
+          <div className="flex-shrink-0">
+            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="text-sm text-blue-800">
+            <p className="font-semibold mb-1">نحوه استفاده:</p>
+            <p>این کد QR را در هنگام خرید به فروشنده نشان دهید تا امتیاز کسب کنید.</p>
           </div>
         </div>
       </div>
