@@ -432,8 +432,8 @@ export default function BusinessHome() {
                   <p className="font-semibold text-blue-800 mb-2">📱 برای Chrome (Android):</p>
                   <ol className="text-blue-700 space-y-1 mr-4 list-decimal">
                     <li>روی آیکون قفل 🔒 یا اطلاعات ⓘ کنار آدرس سایت کلیک کنید</li>
-                    <li>گزینه "دوربین" یا "Camera" را پیدا کنید</li>
-                    <li>آن را روی "مجاز" یا "Allow" قرار دهید</li>
+                    <li>گزینه &ldquo;دوربین&rdquo; یا &ldquo;Camera&rdquo; را پیدا کنید</li>
+                    <li>آن را روی &ldquo;مجاز&rdquo; یا &ldquo;Allow&rdquo; قرار دهید</li>
                     <li>صفحه را رفرش کنید (F5 یا کشیدن به پایین)</li>
                   </ol>
                 </div>
@@ -442,15 +442,15 @@ export default function BusinessHome() {
                 <div className="text-sm">
                   <p className="font-semibold text-blue-800 mb-2">🍎 برای Safari (iPhone):</p>
                   <ol className="text-blue-700 space-y-1 mr-4 list-decimal">
-                    <li>روی "aA" کنار آدرس سایت در بالا ضربه بزنید</li>
-                    <li>گزینه "Website Settings" را انتخاب کنید</li>
-                    <li>روی "Camera" ضربه بزنید</li>
-                    <li>گزینه "Allow" را انتخاب کنید</li>
+                    <li>روی &ldquo;aA&rdquo; کنار آدرس سایت در بالا ضربه بزنید</li>
+                    <li>گزینه &ldquo;Website Settings&rdquo; را انتخاب کنید</li>
+                    <li>روی &ldquo;Camera&rdquo; ضربه بزنید</li>
+                    <li>گزینه &ldquo;Allow&rdquo; را انتخاب کنید</li>
                     <li>صفحه را رفرش کنید</li>
                   </ol>
                   <div className="mt-3 p-3 bg-blue-100 rounded-lg">
                     <p className="text-xs text-blue-900">
-                      <strong>نکته:</strong> اگر گزینه دوربین نمایش داده نشد، ابتدا روی دکمه "شروع اسکن" کلیک کنید تا درخواست دسترسی نمایش داده شود.
+                      <strong>نکته:</strong> اگر گزینه دوربین نمایش داده نشد، ابتدا روی دکمه &ldquo;شروع اسکن&rdquo; کلیک کنید تا درخواست دسترسی نمایش داده شود.
                     </p>
                   </div>
                 </div>
