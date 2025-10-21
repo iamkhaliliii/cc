@@ -5,34 +5,47 @@ import fs from 'fs';
 // Function to get database path with fallbacks
 function getDatabasePath(): string {
   const isDevelopment = process.env.NODE_ENV !== 'production';
-  let dataDir = process.env.DATA_DIR || path.join(process.cwd(), 'data');
+  
+  // Priority order:
+  // 1. DATA_DIR env variable (if set and writable)
+  // 2. ./data (development)
+  // 3. /tmp (always writable, but not persistent - production fallback)
+  
+  const possibleDirs = [
+    process.env.DATA_DIR,
+    !isDevelopment ? '/data' : null,
+    path.join(process.cwd(), 'data'),
+    '/tmp/customer-club-data',
+  ].filter(Boolean) as string[];
 
-  // Try to ensure directory exists
-  if (!fs.existsSync(dataDir)) {
+  let dataDir: string | null = null;
+
+  for (const dir of possibleDirs) {
     try {
-      if (isDevelopment || !dataDir.startsWith('/data')) {
-        fs.mkdirSync(dataDir, { recursive: true });
-        console.log('✅ Created data directory:', dataDir);
-      } else {
-        console.warn('⚠️ Data directory does not exist:', dataDir);
-        console.warn('Attempting to create it...');
-        try {
-          fs.mkdirSync(dataDir, { recursive: true });
-          console.log('✅ Created data directory:', dataDir);
-        } catch (createError) {
-          console.error('❌ Cannot create /data directory. Falling back to ./data');
-          dataDir = path.join(process.cwd(), 'data');
-          if (!fs.existsSync(dataDir)) {
-            fs.mkdirSync(dataDir, { recursive: true });
-          }
-        }
+      // Check if directory exists
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log('✅ Created data directory:', dir);
       }
+      
+      // Test write permission
+      const testFile = path.join(dir, '.write-test');
+      fs.writeFileSync(testFile, 'test');
+      fs.unlinkSync(testFile);
+      
+      // Success! Use this directory
+      dataDir = dir;
+      console.log('✅ Using data directory:', dataDir);
+      break;
     } catch (error) {
-      console.error('❌ Error with data directory:', error);
-      // Ultimate fallback to current directory
-      dataDir = process.cwd();
-      console.log('⚠️ Using fallback directory:', dataDir);
+      console.warn(`⚠️ Cannot use ${dir}:`, error);
+      continue;
     }
+  }
+
+  if (!dataDir) {
+    console.error('❌ No writable directory found! Using /tmp as last resort');
+    dataDir = '/tmp';
   }
 
   const dbPath = path.join(dataDir, 'customer-club.db');

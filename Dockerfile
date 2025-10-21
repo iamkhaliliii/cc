@@ -50,8 +50,12 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-# DATA_DIR points to external volume mount - should be configured in deployment
+# DATA_DIR points to external volume mount
+# If not mounted, will fallback to /tmp (not persistent!)
 ENV DATA_DIR="/data"
+
+# Create /tmp directory for fallback (always writable)
+RUN mkdir -p /tmp/customer-club-data && chown nextjs:nodejs /tmp/customer-club-data
 
 CMD ["node", "server.js"]
 
