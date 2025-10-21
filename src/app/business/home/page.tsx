@@ -57,6 +57,14 @@ export default function BusinessHome() {
         return;
       }
 
+      // Request permission first to get device labels on mobile
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach(track => track.stop());
+      } catch (err) {
+        console.log('Initial permission request:', err);
+      }
+
       // Get list of video devices
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoInputs = devices.filter(device => device.kind === 'videoinput');
@@ -65,13 +73,15 @@ export default function BusinessHome() {
       // Try to use back camera on mobile
       const backCamera = videoInputs.find(device => 
         device.label.toLowerCase().includes('back') || 
-        device.label.toLowerCase().includes('rear')
+        device.label.toLowerCase().includes('rear') ||
+        device.label.toLowerCase().includes('environment')
       );
       
       if (backCamera) {
         setSelectedDeviceId(backCamera.deviceId);
       } else if (videoInputs.length > 0) {
-        setSelectedDeviceId(videoInputs[0].deviceId);
+        // On mobile, prefer the last camera (usually back camera)
+        setSelectedDeviceId(videoInputs[videoInputs.length - 1].deviceId);
       }
 
       try {
@@ -102,6 +112,16 @@ export default function BusinessHome() {
             codeReaderRef.current = new BrowserQRCodeReader();
           }
           
+          // Better constraints for mobile
+          const constraints = {
+            video: {
+              deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
+              facingMode: selectedDeviceId ? undefined : { ideal: 'environment' },
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            }
+          };
+          
           controls = await codeReaderRef.current.decodeFromVideoDevice(
             selectedDeviceId,
             videoRef.current,
@@ -119,6 +139,15 @@ export default function BusinessHome() {
               }
             }
           );
+
+          // Ensure video plays on mobile
+          if (videoRef.current) {
+            videoRef.current.setAttribute('autoplay', '');
+            videoRef.current.setAttribute('playsinline', '');
+            videoRef.current.play().catch((e) => {
+              console.log('Error playing video:', e);
+            });
+          }
         } catch (error) {
           console.error("Error starting scanner:", error);
           setPermissionError("خطا در شروع دوربین. لطفاً مجدد تلاش کنید.");
@@ -338,7 +367,9 @@ export default function BusinessHome() {
                 ref={videoRef}
                 className="w-full h-auto max-h-[400px]"
                 playsInline
+                autoPlay
                 muted
+                style={{ objectFit: 'cover' }}
               />
               {/* Scan Frame Overlay */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
