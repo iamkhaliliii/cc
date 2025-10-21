@@ -76,6 +76,34 @@ function initDatabase() {
     )
   `);
 
+  // SuperAdmin table (no dependencies)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS superadmins (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username VARCHAR(50) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(100),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Resellers table (no dependencies)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS resellers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username VARCHAR(50) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      name VARCHAR(100) NOT NULL,
+      email VARCHAR(100),
+      phone VARCHAR(20),
+      commission_rate DECIMAL(5, 2) DEFAULT 0,
+      is_active BOOLEAN DEFAULT 1,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   // Businesses table
   db.exec(`
     CREATE TABLE IF NOT EXISTS businesses (
@@ -85,8 +113,10 @@ function initDatabase() {
       email VARCHAR(100),
       address TEXT,
       logo_url TEXT,
+      reseller_id INTEGER,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (reseller_id) REFERENCES resellers(id) ON DELETE SET NULL
     )
   `);
 

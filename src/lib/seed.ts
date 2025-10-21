@@ -34,6 +34,12 @@ export async function seedTestUser() {
 
     // Seed test business
     await seedTestBusiness();
+    
+    // Seed superadmin
+    await seedSuperAdmin();
+    
+    // Seed reseller
+    await seedReseller();
   } catch (error) {
     console.error("Error seeding test user:", error);
   }
@@ -87,6 +93,78 @@ export async function seedTestBusiness() {
     console.log("Password: 1234");
   } catch (error) {
     console.error("Error seeding test business:", error);
+  }
+}
+
+export async function seedSuperAdmin() {
+  try {
+    // Check if superadmin already exists
+    const stmt = db.prepare("SELECT * FROM superadmins WHERE username = ?");
+    const existingSuperAdmin = stmt.get("admin");
+
+    if (existingSuperAdmin) {
+      console.log("SuperAdmin already exists");
+      return;
+    }
+
+    // Hash password
+    const passwordHash = await bcrypt.hash("admin123", 10);
+
+    // Create superadmin
+    const insertStmt = db.prepare(`
+      INSERT INTO superadmins (username, password_hash, name, email)
+      VALUES (?, ?, ?, ?)
+    `);
+
+    insertStmt.run(
+      "admin",
+      passwordHash,
+      "مدیر کل سیستم",
+      "admin@customerclub.com"
+    );
+
+    console.log("✅ SuperAdmin created successfully");
+    console.log("Username: admin");
+    console.log("Password: admin123");
+  } catch (error) {
+    console.error("Error seeding superadmin:", error);
+  }
+}
+
+export async function seedReseller() {
+  try {
+    // Check if reseller already exists
+    const stmt = db.prepare("SELECT * FROM resellers WHERE username = ?");
+    const existingReseller = stmt.get("reseller1");
+
+    if (existingReseller) {
+      console.log("Reseller already exists");
+      return;
+    }
+
+    // Hash password
+    const passwordHash = await bcrypt.hash("reseller123", 10);
+
+    // Create reseller
+    const insertStmt = db.prepare(`
+      INSERT INTO resellers (username, password_hash, name, email, phone, commission_rate)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+
+    insertStmt.run(
+      "reseller1",
+      passwordHash,
+      "نمایندگی تستی",
+      "reseller@test.com",
+      "02133445566",
+      5.0
+    );
+
+    console.log("✅ Reseller created successfully");
+    console.log("Username: reseller1");
+    console.log("Password: reseller123");
+  } catch (error) {
+    console.error("Error seeding reseller:", error);
   }
 }
 
