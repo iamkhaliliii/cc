@@ -93,16 +93,19 @@ export default function BusinessHome() {
 
   useEffect(() => {
     let isActive = true;
+    let controls: any = null;
 
     const startScanning = async () => {
       if (scanning && videoRef.current && selectedDeviceId) {
         try {
-          codeReaderRef.current = new BrowserQRCodeReader();
+          if (!codeReaderRef.current) {
+            codeReaderRef.current = new BrowserQRCodeReader();
+          }
           
-          const controls = await codeReaderRef.current.decodeFromVideoDevice(
+          controls = await codeReaderRef.current.decodeFromVideoDevice(
             selectedDeviceId,
             videoRef.current,
-            (result, error) => {
+            (result) => {
               if (result && isActive) {
                 try {
                   const data = JSON.parse(result.getText());
@@ -116,8 +119,6 @@ export default function BusinessHome() {
               }
             }
           );
-
-          return controls;
         } catch (error) {
           console.error("Error starting scanner:", error);
           setPermissionError("خطا در شروع دوربین. لطفاً مجدد تلاش کنید.");
@@ -126,18 +127,24 @@ export default function BusinessHome() {
       }
     };
 
-    let controls: any;
     if (scanning) {
-      startScanning().then(c => { controls = c; });
+      startScanning();
     }
 
     return () => {
       isActive = false;
       if (controls) {
-        controls.stop();
+        try {
+          controls.stop();
+        } catch (e) {
+          console.log("Error stopping controls:", e);
+        }
       }
-      if (codeReaderRef.current) {
-        codeReaderRef.current.reset();
+      // Stop all video tracks
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        videoRef.current.srcObject = null;
       }
     };
   }, [scanning, selectedDeviceId]);
@@ -166,9 +173,7 @@ export default function BusinessHome() {
 
   const handleStopScan = () => {
     setScanning(false);
-    if (codeReaderRef.current) {
-      codeReaderRef.current.reset();
-    }
+    // Cleanup will happen in useEffect cleanup
   };
 
   const handleVerifyCustomer = async () => {
