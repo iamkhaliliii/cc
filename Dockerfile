@@ -39,6 +39,10 @@ COPY --from=builder /app/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# Create data directory for SQLite database
+RUN mkdir -p /app/data
+RUN chown -R nextjs:nodejs /app/data
+
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
@@ -50,6 +54,7 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV DATA_DIR="/app/data"
 
 CMD ["node", "server.js"]
 
