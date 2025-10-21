@@ -33,7 +33,9 @@ export default function BusinessHome() {
   const [permissionError, setPermissionError] = useState<string>("");
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+  const [useFallbackMode, setUseFallbackMode] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
   const router = useRouter();
 
@@ -52,8 +54,9 @@ export default function BusinessHome() {
   const checkCameraPermissions = async () => {
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setPermissionError("دوربین در این دستگاه پشتیبانی نمی‌شود");
+        setPermissionError("دوربین مستقیم پشتیبانی نمی‌شود. از حالت آپلود تصویر استفاده کنید.");
         setCameraPermission('denied');
+        setUseFallbackMode(true);
         return;
       }
 
@@ -206,6 +209,31 @@ export default function BusinessHome() {
     // Cleanup will happen in useEffect cleanup
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const reader = new BrowserQRCodeReader();
+      const result = await reader.decodeFromImageUrl(URL.createObjectURL(file));
+      
+      try {
+        const data = JSON.parse(result.getText());
+        if (data.type === "customer") {
+          setScannedData(data);
+          setPermissionError("");
+        } else {
+          setPermissionError("QR code معتبر نیست");
+        }
+      } catch {
+        setPermissionError("QR code معتبر نیست");
+      }
+    } catch (error) {
+      console.error("Error reading QR from image:", error);
+      setPermissionError("خطا در خواندن QR code از تصویر");
+    }
+  };
+
   const handleVerifyCustomer = async () => {
     if (!scannedData) return;
     
@@ -307,8 +335,46 @@ export default function BusinessHome() {
           </div>
         )}
 
+        {/* File Upload Option (Fallback) */}
+        {useFallbackMode && !scannedData && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center space-y-4">
+            <div className="bg-blue-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">آپلود تصویر QR Code</h3>
+              <p className="text-slate-600 text-sm">
+                از گالری خود عکس QR code مشتری را انتخاب کنید
+              </p>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              عکس گرفتن یا انتخاب از گالری
+            </button>
+            <p className="text-xs text-slate-500">
+              دوربین مستقیم در این دستگاه/مرورگر پشتیبانی نمی‌شود
+            </p>
+          </div>
+        )}
+
         {/* Scanner Section */}
-        {!scanning && !scannedData && cameraPermission !== 'checking' && (
+        {!scanning && !scannedData && !useFallbackMode && cameraPermission !== 'checking' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center space-y-4">
             <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto ${
               cameraPermission === 'granted' ? 'bg-emerald-100' : 
