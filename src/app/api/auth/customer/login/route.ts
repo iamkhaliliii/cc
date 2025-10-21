@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import db from "@/lib/db";
 
+interface User {
+  id: number;
+  phone: string;
+  password_hash: string;
+  name: string;
+  email: string | null;
+  points: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { mobile, password } = await request.json();
@@ -15,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     // Get user by phone
     const stmt = db.prepare("SELECT * FROM users WHERE phone = ?");
-    const user = stmt.get(mobile) as any;
+    const user = stmt.get(mobile) as User | undefined;
 
     if (!user) {
       return NextResponse.json(
@@ -35,6 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Remove password from response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password_hash, ...userWithoutPassword } = user;
 
     return NextResponse.json({

@@ -24,7 +24,7 @@ export async function GET() {
       VALUES (?, ?, ?, ?, ?)
     `);
 
-    const result = insertStmt.run(
+    insertStmt.run(
       "09124580298",
       passwordHash,
       "کاربر آزمایشی",
@@ -44,10 +44,11 @@ export async function GET() {
         password: "0298",
       },
     });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Seed error:", error);
     return NextResponse.json(
-      { error: "Error creating test user", details: error.message },
+      { error: "Error creating test user", details: errorMessage },
       { status: 500 }
     );
   }

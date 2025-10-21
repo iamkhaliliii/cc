@@ -31,7 +31,7 @@ export default function CustomerLogin() {
       } else {
         setError(data.error || "خطا در ورود");
       }
-    } catch (err) {
+    } catch {
       setError("خطا در برقراری ارتباط");
     } finally {
       setLoading(false);

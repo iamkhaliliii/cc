@@ -5,9 +5,19 @@ import { useRouter } from "next/navigation";
 
 type Tab = "home" | "points" | "profile";
 
+interface User {
+  id: number;
+  phone: string;
+  name: string;
+  email: string | null;
+  points: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function CustomerHome() {
   const [activeTab, setActiveTab] = useState<Tab>("home");
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -82,7 +92,7 @@ export default function CustomerHome() {
   );
 }
 
-function HomeTab({ user }: { user: any }) {
+function HomeTab({ user }: { user: User }) {
   return (
     <div className="p-4 space-y-6">
       {/* Header */}
@@ -139,7 +149,7 @@ function HomeTab({ user }: { user: any }) {
   );
 }
 
-function PointsTab({ user }: { user: any }) {
+function PointsTab({ user }: { user: User }) {
   return (
     <div className="p-4 space-y-6">
       {/* Points Summary */}
@@ -187,7 +197,7 @@ function PointsTab({ user }: { user: any }) {
   );
 }
 
-function ProfileTab({ user }: { user: any }) {
+function ProfileTab({ user }: { user: User }) {
   const router = useRouter();
 
   const handleLogout = () => {
