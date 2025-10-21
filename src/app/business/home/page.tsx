@@ -29,6 +29,8 @@ export default function BusinessHome() {
   const [scanning, setScanning] = useState(false);
   const [scannedData, setScannedData] = useState<CustomerData | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [cameraPermission, setCameraPermission] = useState<'granted' | 'denied' | 'prompt' | 'checking'>('checking');
+  const [permissionError, setPermissionError] = useState<string>("");
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
   const router = useRouter();
 
@@ -39,7 +41,30 @@ export default function BusinessHome() {
     } else {
       setUser(JSON.parse(userData));
     }
+
+    // Check camera permissions
+    checkCameraPermissions();
   }, [router]);
+
+  const checkCameraPermissions = async () => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setPermissionError("دوربین در این دستگاه پشتیبانی نمی‌شود");
+        setCameraPermission('denied');
+        return;
+      }
+
+      const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
+      setCameraPermission(result.state as 'granted' | 'denied' | 'prompt');
+
+      result.onchange = () => {
+        setCameraPermission(result.state as 'granted' | 'denied' | 'prompt');
+      };
+    } catch (error) {
+      console.log('Permission API not supported, will request on scan');
+      setCameraPermission('prompt');
+    }
+  };
 
   useEffect(() => {
     if (scanning && !scannerRef.current) {
@@ -81,9 +106,26 @@ export default function BusinessHome() {
     };
   }, [scanning]);
 
-  const handleStartScan = () => {
+  const handleStartScan = async () => {
     setScannedData(null);
-    setScanning(true);
+    setPermissionError("");
+
+    // Request camera permission first
+    if (cameraPermission !== 'granted') {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // Stop the stream immediately, we just needed permission
+        stream.getTracks().forEach(track => track.stop());
+        setCameraPermission('granted');
+        setScanning(true);
+      } catch (error) {
+        console.error('Camera permission denied:', error);
+        setPermissionError("دسترسی به دوربین رد شد. لطفاً از تنظیمات مرورگر دسترسی دوربین را فعال کنید.");
+        setCameraPermission('denied');
+      }
+    } else {
+      setScanning(true);
+    }
   };
 
   const handleStopScan = () => {
@@ -156,29 +198,87 @@ export default function BusinessHome() {
           </div>
         </div>
 
+        {/* Permission Error */}
+        {permissionError && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
+            <div className="flex gap-3">
+              <div className="flex-shrink-0">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-red-800 mb-1">خطا در دسترسی</h4>
+                <p className="text-sm text-red-700">{permissionError}</p>
+                {cameraPermission === 'denied' && (
+                  <button
+                    onClick={checkCameraPermissions}
+                    className="mt-3 text-sm text-red-600 hover:text-red-700 font-medium underline"
+                  >
+                    تلاش مجدد
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Camera Permission Status */}
+        {cameraPermission === 'checking' && (
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div className="flex items-center gap-3">
+              <div className="animate-spin">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+              <p className="text-sm text-blue-800">در حال بررسی دسترسی دوربین...</p>
+            </div>
+          </div>
+        )}
+
         {/* Scanner Section */}
-        {!scanning && !scannedData && (
+        {!scanning && !scannedData && cameraPermission !== 'checking' && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center space-y-4">
-            <div className="bg-emerald-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto ${
+              cameraPermission === 'granted' ? 'bg-emerald-100' : 
+              cameraPermission === 'denied' ? 'bg-red-100' : 'bg-yellow-100'
+            }`}>
+              <svg className={`w-12 h-12 ${
+                cameraPermission === 'granted' ? 'text-emerald-600' : 
+                cameraPermission === 'denied' ? 'text-red-600' : 'text-yellow-600'
+              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
               </svg>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-slate-800 mb-2">آماده اسکن</h3>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">
+                {cameraPermission === 'granted' ? 'آماده اسکن' : 
+                 cameraPermission === 'denied' ? 'دسترسی دوربین لازم است' :
+                 'درخواست دسترسی دوربین'}
+              </h3>
               <p className="text-slate-600 text-sm">
-                دکمه زیر را بزنید و QR code مشتری را اسکن کنید
+                {cameraPermission === 'granted' ? 'دکمه زیر را بزنید و QR code مشتری را اسکن کنید' :
+                 cameraPermission === 'denied' ? 'لطفاً از تنظیمات مرورگر دسترسی دوربین را فعال کنید' :
+                 'برای اسکن QR code به دوربین نیاز است'}
               </p>
             </div>
             <button
               onClick={handleStartScan}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+              disabled={cameraPermission === 'denied'}
+              className={`w-full font-medium py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 ${
+                cameraPermission === 'denied' 
+                  ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white'
+              }`}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              شروع اسکن
+              {cameraPermission === 'granted' ? 'شروع اسکن' : 
+               cameraPermission === 'prompt' ? 'درخواست دسترسی و شروع' :
+               'دسترسی دوربین غیرفعال'}
             </button>
           </div>
         )}
