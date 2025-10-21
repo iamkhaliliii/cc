@@ -218,7 +218,7 @@ function QRCodeTab({ user }: { user: User }) {
   const [brightness, setBrightness] = useState(1);
 
   useEffect(() => {
-    if (canvasRef.current) {
+    if (canvasRef.current && user && user.id) {
       // Generate QR code with user ID
       const qrData = JSON.stringify({
         userId: user.id,
@@ -226,6 +226,8 @@ function QRCodeTab({ user }: { user: User }) {
         name: user.name,
         type: "customer"
       });
+
+      console.log('Generating QR code with data:', qrData);
 
       QRCode.toCanvas(
         canvasRef.current,
@@ -236,10 +238,15 @@ function QRCodeTab({ user }: { user: User }) {
           color: {
             dark: "#1e40af",
             light: "#ffffff"
-          }
+          },
+          errorCorrectionLevel: 'H'
         },
         (error) => {
-          if (error) console.error("QR Code error:", error);
+          if (error) {
+            console.error("QR Code generation error:", error);
+          } else {
+            console.log("QR Code generated successfully");
+          }
         }
       );
     }
