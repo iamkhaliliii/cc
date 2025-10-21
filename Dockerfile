@@ -39,6 +39,9 @@ COPY --from=builder /app/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# Create /tmp directory for database fallback (before switching to nextjs user)
+RUN mkdir -p /tmp/customer-club-data && chown -R nextjs:nodejs /tmp/customer-club-data
+
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
@@ -53,9 +56,6 @@ ENV HOSTNAME="0.0.0.0"
 # DATA_DIR points to external volume mount
 # If not mounted, will fallback to /tmp (not persistent!)
 ENV DATA_DIR="/data"
-
-# Create /tmp directory for fallback (always writable)
-RUN mkdir -p /tmp/customer-club-data && chown nextjs:nodejs /tmp/customer-club-data
 
 CMD ["node", "server.js"]
 
