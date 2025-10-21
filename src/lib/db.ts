@@ -2,34 +2,46 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-// Ensure data directory exists
-// In production with volume mount, DATA_DIR should point to a mounted volume (e.g., /data)
-// In development or when DATA_DIR is not set, it defaults to ./data
-const isDevelopment = process.env.NODE_ENV !== 'production';
-const dataDir = process.env.DATA_DIR || path.join(process.cwd(), 'data');
+// Function to get database path with fallbacks
+function getDatabasePath(): string {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  let dataDir = process.env.DATA_DIR || path.join(process.cwd(), 'data');
 
-// Only create directory if it doesn't exist and we have permission
-if (!fs.existsSync(dataDir)) {
-  try {
-    // In development, create the directory
-    // In production, the directory should already exist (mounted volume)
-    if (isDevelopment || !dataDir.startsWith('/data')) {
-      fs.mkdirSync(dataDir, { recursive: true });
-      console.log('Created data directory:', dataDir);
-    } else {
-      console.warn('Data directory does not exist and cannot be created:', dataDir);
-      console.warn('Make sure to mount a volume to this path in production');
+  // Try to ensure directory exists
+  if (!fs.existsSync(dataDir)) {
+    try {
+      if (isDevelopment || !dataDir.startsWith('/data')) {
+        fs.mkdirSync(dataDir, { recursive: true });
+        console.log('✅ Created data directory:', dataDir);
+      } else {
+        console.warn('⚠️ Data directory does not exist:', dataDir);
+        console.warn('Attempting to create it...');
+        try {
+          fs.mkdirSync(dataDir, { recursive: true });
+          console.log('✅ Created data directory:', dataDir);
+        } catch (createError) {
+          console.error('❌ Cannot create /data directory. Falling back to ./data');
+          dataDir = path.join(process.cwd(), 'data');
+          if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error with data directory:', error);
+      // Ultimate fallback to current directory
+      dataDir = process.cwd();
+      console.log('⚠️ Using fallback directory:', dataDir);
     }
-  } catch (error) {
-    console.error('Failed to create data directory:', error);
-    console.error('Falling back to process.cwd()/data');
-    // Fallback to current directory if /data is not accessible
   }
+
+  const dbPath = path.join(dataDir, 'customer-club.db');
+  console.log('📁 Database path:', dbPath);
+  
+  return dbPath;
 }
 
-const dbPath = path.join(dataDir, 'customer-club.db');
-console.log('Database path:', dbPath);
-
+const dbPath = getDatabasePath();
 const db = new Database(dbPath);
 
 // Enable foreign keys
