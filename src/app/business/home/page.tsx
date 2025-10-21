@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { BrowserQRCodeReader } from "@zxing/browser";
 
 interface BusinessUser {
   id: number;
@@ -31,7 +31,10 @@ export default function BusinessHome() {
   const [verifying, setVerifying] = useState(false);
   const [cameraPermission, setCameraPermission] = useState<'granted' | 'denied' | 'prompt' | 'checking'>('checking');
   const [permissionError, setPermissionError] = useState<string>("");
-  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
+  const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -54,57 +57,90 @@ export default function BusinessHome() {
         return;
       }
 
-      const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
-      setCameraPermission(result.state as 'granted' | 'denied' | 'prompt');
+      // Get list of video devices
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const videoInputs = devices.filter(device => device.kind === 'videoinput');
+      setVideoDevices(videoInputs);
 
-      result.onchange = () => {
+      // Try to use back camera on mobile
+      const backCamera = videoInputs.find(device => 
+        device.label.toLowerCase().includes('back') || 
+        device.label.toLowerCase().includes('rear')
+      );
+      
+      if (backCamera) {
+        setSelectedDeviceId(backCamera.deviceId);
+      } else if (videoInputs.length > 0) {
+        setSelectedDeviceId(videoInputs[0].deviceId);
+      }
+
+      try {
+        const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
         setCameraPermission(result.state as 'granted' | 'denied' | 'prompt');
-      };
+
+        result.onchange = () => {
+          setCameraPermission(result.state as 'granted' | 'denied' | 'prompt');
+        };
+      } catch {
+        console.log('Permission API not supported, will request on scan');
+        setCameraPermission('prompt');
+      }
     } catch (error) {
-      console.log('Permission API not supported, will request on scan');
+      console.log('Error checking permissions:', error);
       setCameraPermission('prompt');
     }
   };
 
   useEffect(() => {
-    if (scanning && !scannerRef.current) {
-      scannerRef.current = new Html5QrcodeScanner(
-        "qr-reader",
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-        },
-        false
-      );
+    let isActive = true;
 
-      scannerRef.current.render(
-        (decodedText) => {
-          try {
-            const data = JSON.parse(decodedText);
-            if (data.type === "customer") {
-              setScannedData(data);
-              setScanning(false);
-              scannerRef.current?.clear();
-              scannerRef.current = null;
+    const startScanning = async () => {
+      if (scanning && videoRef.current && selectedDeviceId) {
+        try {
+          codeReaderRef.current = new BrowserQRCodeReader();
+          
+          const controls = await codeReaderRef.current.decodeFromVideoDevice(
+            selectedDeviceId,
+            videoRef.current,
+            (result, error) => {
+              if (result && isActive) {
+                try {
+                  const data = JSON.parse(result.getText());
+                  if (data.type === "customer") {
+                    setScannedData(data);
+                    setScanning(false);
+                  }
+                } catch (err) {
+                  console.error("Invalid QR code:", err);
+                }
+              }
             }
-          } catch (error) {
-            console.error("Invalid QR code:", error);
-          }
-        },
-        (error) => {
-          // Silent error handling for scanning
-          console.log(error);
+          );
+
+          return controls;
+        } catch (error) {
+          console.error("Error starting scanner:", error);
+          setPermissionError("خطا در شروع دوربین. لطفاً مجدد تلاش کنید.");
+          setScanning(false);
         }
-      );
+      }
+    };
+
+    let controls: any;
+    if (scanning) {
+      startScanning().then(c => { controls = c; });
     }
 
     return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(console.error);
-        scannerRef.current = null;
+      isActive = false;
+      if (controls) {
+        controls.stop();
+      }
+      if (codeReaderRef.current) {
+        codeReaderRef.current.reset();
       }
     };
-  }, [scanning]);
+  }, [scanning, selectedDeviceId]);
 
   const handleStartScan = async () => {
     setScannedData(null);
@@ -130,9 +166,8 @@ export default function BusinessHome() {
 
   const handleStopScan = () => {
     setScanning(false);
-    if (scannerRef.current) {
-      scannerRef.current.clear().catch(console.error);
-      scannerRef.current = null;
+    if (codeReaderRef.current) {
+      codeReaderRef.current.reset();
     }
   };
 
@@ -285,15 +320,56 @@ export default function BusinessHome() {
 
         {/* Scanner Active */}
         {scanning && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
             <div className="mb-4 text-center">
               <h3 className="text-lg font-bold text-slate-800 mb-2">در حال اسکن...</h3>
               <p className="text-sm text-slate-600">QR code را در مقابل دوربین قرار دهید</p>
             </div>
-            <div id="qr-reader" className="w-full"></div>
+            
+            {/* Video Preview */}
+            <div className="relative rounded-xl overflow-hidden bg-black mb-4">
+              <video
+                ref={videoRef}
+                className="w-full h-auto max-h-[400px]"
+                playsInline
+                muted
+              />
+              {/* Scan Frame Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-64 h-64 border-4 border-emerald-500 rounded-2xl shadow-lg">
+                  {/* Corner markers */}
+                  <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white"></div>
+                  <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white"></div>
+                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white"></div>
+                  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Camera Switch */}
+            {videoDevices.length > 1 && (
+              <div className="mb-3">
+                <select
+                  value={selectedDeviceId}
+                  onChange={(e) => {
+                    setSelectedDeviceId(e.target.value);
+                    handleStopScan();
+                    setTimeout(() => setScanning(true), 100);
+                  }}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
+                >
+                  {videoDevices.map((device) => (
+                    <option key={device.deviceId} value={device.deviceId}>
+                      {device.label || `دوربین ${videoDevices.indexOf(device) + 1}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <button
               onClick={handleStopScan}
-              className="w-full mt-4 bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 px-6 rounded-xl border border-red-200 transition-colors"
+              className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 px-6 rounded-xl border border-red-200 transition-colors"
             >
               لغو اسکن
             </button>

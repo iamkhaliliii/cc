@@ -11,6 +11,8 @@
   "dependencies": {
     "@types/bcryptjs": "^3.0.0",
     "@types/qrcode": "^1.5.5",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^12.4.1",
     "class-variance-authority": "^0.7.1",
