@@ -191,9 +191,13 @@ export default function BusinessHome() {
     setScannedData(null);
     setPermissionError("");
 
+    console.log('handleStartScan - current permission:', cameraPermission);
+    console.log('handleStartScan - selected device:', selectedDeviceId);
+
     // Request camera permission first
     if (cameraPermission !== 'granted') {
       try {
+        console.log('Requesting camera permission...');
         // Request with facingMode for mobile back camera
         const stream = await navigator.mediaDevices.getUserMedia({ 
           video: { 
@@ -202,6 +206,8 @@ export default function BusinessHome() {
             height: { ideal: 720 }
           } 
         });
+        
+        console.log('Permission granted! Stream:', stream.getTracks());
         
         // Stop the stream immediately, we just needed permission
         stream.getTracks().forEach(track => track.stop());
@@ -212,6 +218,7 @@ export default function BusinessHome() {
         // Get updated device list with labels
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoInputs = devices.filter(device => device.kind === 'videoinput');
+        console.log('Available cameras:', videoInputs);
         setVideoDevices(videoInputs);
         
         // Select back camera if available
@@ -221,21 +228,40 @@ export default function BusinessHome() {
           device.label.toLowerCase().includes('environment')
         );
         
+        let selectedDevice = '';
         if (backCamera && backCamera.deviceId) {
-          setSelectedDeviceId(backCamera.deviceId);
+          selectedDevice = backCamera.deviceId;
+          console.log('Selected back camera:', backCamera.label);
         } else if (videoInputs.length > 0) {
-          setSelectedDeviceId(videoInputs[videoInputs.length - 1].deviceId);
+          selectedDevice = videoInputs[videoInputs.length - 1].deviceId;
+          console.log('Selected last camera:', videoInputs[videoInputs.length - 1].label);
         }
         
-        // Start scanning
-        setTimeout(() => setScanning(true), 100);
+        setSelectedDeviceId(selectedDevice);
+        
+        // Start scanning with delay to ensure state is updated
+        setTimeout(() => {
+          console.log('Starting scan with device:', selectedDevice);
+          setScanning(true);
+        }, 200);
       } catch (error) {
         console.error('Camera permission denied:', error);
         setPermissionError("دسترسی به دوربین رد شد. لطفاً از تنظیمات مرورگر دسترسی دوربین را فعال کنید.");
         setCameraPermission('denied');
       }
     } else {
-      setScanning(true);
+      // Already have permission, just start scanning
+      if (!selectedDeviceId && videoDevices.length > 0) {
+        // If no device selected, select one
+        const backCamera = videoDevices.find(device => 
+          device.label.toLowerCase().includes('back') || 
+          device.label.toLowerCase().includes('rear')
+        );
+        setSelectedDeviceId(backCamera?.deviceId || videoDevices[videoDevices.length - 1].deviceId);
+        setTimeout(() => setScanning(true), 100);
+      } else {
+        setScanning(true);
+      }
     }
   };
 
