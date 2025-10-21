@@ -6,22 +6,23 @@ import "../lib/init-db";
 const vazirmatn = localFont({
   src: [
     {
-      path: "../../node_modules/vazirmatn/misc/Farsi-Digits/fonts/webfonts/Vazirmatn-FD-Regular.woff2",
+      path: "../../public/fonts/Vazirmatn-FD-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../node_modules/vazirmatn/misc/Farsi-Digits/fonts/webfonts/Vazirmatn-FD-Medium.woff2",
+      path: "../../public/fonts/Vazirmatn-FD-Medium.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../node_modules/vazirmatn/misc/Farsi-Digits/fonts/webfonts/Vazirmatn-FD-Bold.woff2",
+      path: "../../public/fonts/Vazirmatn-FD-Bold.woff2",
       weight: "700",
       style: "normal",
     },
   ],
   variable: "--font-vazirmatn",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body
-        className={`${vazirmatn.variable} antialiased`}
+        className={`${vazirmatn.variable} font-sans antialiased`}
       >
         {children}
       </body>
