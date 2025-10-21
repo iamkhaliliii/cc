@@ -1,9 +1,3 @@
-import { initDatabase } from './db';
-
-// Initialize the database when the module is first loaded
-try {
-  initDatabase();
-} catch (error) {
-  console.error('Failed to initialize database:', error);
-}
+// This file is kept for compatibility but database is now initialized in db.ts
+import './db';
 

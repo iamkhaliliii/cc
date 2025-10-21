@@ -7,8 +7,8 @@ const db = new Database(dbPath);
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
 
-// Initialize database schema
-export function initDatabase() {
+// Initialize database schema immediately
+function initDatabase() {
   // Users table (customers)
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -96,6 +96,9 @@ export function initDatabase() {
 
   console.log('✅ Database initialized successfully');
 }
+
+// Initialize database on module load
+initDatabase();
 
 // Get all users
 export const getUsers = db.prepare('SELECT * FROM users ORDER BY created_at DESC');
