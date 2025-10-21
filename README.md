@@ -1,36 +1,190 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# باشگاه مشتریان - Customer Club
 
-## Getting Started
+سامانه جامع مدیریت باشگاه مشتریان با Next.js، Tailwind CSS و SQLite
 
-First, run the development server:
+## 🚀 ویژگی‌ها
 
-```bash
+### بخش مشتری
+- ✅ ورود با شماره موبایل و رمز عبور
+- ✅ نمایش امتیازات و موجودی
+- ✅ QR Code اختصاصی برای هر کاربر
+- ✅ قابلیت دانلود و اشتراک‌گذاری QR Code
+- ✅ نمایش تاریخچه تراکنش‌ها
+- ✅ پروفایل کاربری
+
+### بخش کسب‌وکار
+- ✅ ورود با نام کاربری و رمز عبور
+- ✅ اسکن QR Code مشتریان (دوربین مستقیم یا آپلود تصویر)
+- ✅ تایید و ثبت تراکنش
+- ✅ پشتیبانی کامل از موبایل
+
+## 📋 پیش‌نیازها
+
+- Node.js 20+
+- npm یا yarn
+
+## 🛠️ نصب و راه‌اندازی محلی
+
+\`\`\`bash
+# نصب وابستگی‌ها
+npm install
+
+# اجرای سرور توسعه
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# ساخت کاربران تستی
+curl http://localhost:3000/api/seed
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# باز کردن در مرورگر
+open http://localhost:3000
+\`\`\`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 👤 کاربران تستی
 
-## Learn More
+### مشتری
+- **موبایل:** 09124580298
+- **رمز عبور:** 0298
+- **امتیاز:** 1500
 
-To learn more about Next.js, take a look at the following resources:
+### کسب‌وکار
+- **نام کاربری:** business1
+- **رمز عبور:** 1234
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🐳 Docker Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### ساخت Image
 
-## Deploy on Vercel
+\`\`\`bash
+docker build -t customer-club .
+\`\`\`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### اجرا با Volume (توصیه می‌شود)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+\`\`\`bash
+docker run -d \\
+  -p 3000:3000 \\
+  -v /path/to/data:/data \\
+  --name customer-club \\
+  customer-club
+\`\`\`
+
+### اجرا بدون Volume (⚠️ داده‌ها موقتی)
+
+\`\`\`bash
+docker run -d \\
+  -p 3000:3000 \\
+  --name customer-club \\
+  customer-club
+\`\`\`
+
+**نکته مهم:** بدون volume mount، داده‌ها در `/tmp` ذخیره می‌شوند و با restart container از بین می‌روند!
+
+## 🔧 تنظیمات
+
+### متغیرهای محیطی
+
+| متغیر | پیش‌فرض | توضیحات |
+|-------|---------|----------|
+| `DATA_DIR` | `/data` | مسیر ذخیره دیتابیس (باید به volume mount شود) |
+| `PORT` | `3000` | پورت سرور |
+| `NODE_ENV` | `production` | محیط اجرا |
+
+### حجم مورد نیاز Volume
+
+- **حداقل:** 100MB
+- **توصیه شده:** 1GB
+
+## 📱 استفاده روی موبایل
+
+### برای مشتریان:
+1. وارد شوید و به تب "کد من" بروید
+2. روی "ذخیره" کلیک کنید تا QR در گالری ذخیره شود
+3. در فروشگاه، تصویر QR را از گالری به فروشنده نشان دهید
+
+### برای فروشگاه‌ها:
+1. وارد شوید
+2. روی "عکس گرفتن یا انتخاب از گالری" کلیک کنید
+3. QR Code مشتری را بگیرید یا انتخاب کنید
+4. اطلاعات مشتری نمایش داده می‌شود
+5. روی "تایید و ثبت" کلیک کنید
+
+## 🔍 Health Check
+
+برای بررسی وضعیت سرویس:
+
+\`\`\`bash
+curl http://localhost:3000/api/health
+\`\`\`
+
+پاسخ موفق:
+\`\`\`json
+{
+  "status": "healthy",
+  "timestamp": "2025-10-21T23:27:47.906Z",
+  "database": {
+    "connected": true,
+    "users": 1
+  },
+  "version": "1.0.0"
+}
+\`\`\`
+
+## 🗄️ ساختار دیتابیس
+
+### جداول اصلی:
+- `users` - اطلاعات مشتریان
+- `businesses` - اطلاعات کسب‌وکارها
+- `business_users` - کاربران کسب‌وکار
+- `transactions` - تراکنش‌ها و امتیازات
+- `rewards` - جوایز
+- `redemptions` - استفاده از جوایز
+
+## 🎨 تکنولوژی‌های استفاده شده
+
+- **Framework:** Next.js 15 (App Router + Turbopack)
+- **زبان:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **UI Components:** shadcn/ui
+- **فونت:** Vazirmatn (فارسی)
+- **دیتابیس:** SQLite (better-sqlite3)
+- **QR Code:** qrcode + @zxing/browser
+- **Authentication:** bcryptjs
+
+## 📝 نکات مهم
+
+### ⚠️ محدودیت‌های SQLite
+- مناسب برای تعداد کاربر کم تا متوسط
+- برای scale بالا به PostgreSQL یا MySQL مهاجرت کنید
+
+### 🔒 امنیت
+- رمزها با bcrypt hash می‌شوند
+- Session در localStorage ذخیره می‌شود
+- HTTPS در production توصیه می‌شود
+
+### 💾 Backup
+فایل دیتابیس را از مسیر زیر backup بگیرید:
+- با volume: `/data/customer-club.db`
+- بدون volume: `/tmp/customer-club-data/customer-club.db` (موقتی!)
+
+## 🐛 عیب‌یابی
+
+### دیتابیس باز نمی‌شود
+- مطمئن شوید volume به `/data` mount شده است
+- permission های دایرکتوری را چک کنید (باید writable باشد)
+
+### دوربین کار نمی‌کند
+- از HTTPS استفاده کنید (الزامی برای دسترسی دوربین)
+- دسترسی دوربین را در تنظیمات مرورگر فعال کنید
+- از حالت "آپلود تصویر" به عنوان جایگزین استفاده کنید
+
+### فونت فارسی نمایش داده نمی‌شود
+- مطمئن شوید فایل‌های فونت در `public/fonts/` وجود دارند
+- Cache مرورگر را پاک کنید
+
+## 📞 پشتیبانی
+
+برای گزارش مشکلات یا پیشنهادات، یک Issue در GitHub باز کنید.
+
+## 📄 مجوز
+
+این پروژه تحت مجوز MIT منتشر شده است.
