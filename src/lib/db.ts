@@ -3,9 +3,18 @@ import path from 'path';
 import fs from 'fs';
 
 // Ensure data directory exists
+// In production, DATA_DIR should point to a mounted volume (e.g., /data)
+// In development, it defaults to ./data
 const dataDir = process.env.DATA_DIR || path.join(process.cwd(), 'data');
+
+// Only create directory if it doesn't exist (for development)
 if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+  try {
+    fs.mkdirSync(dataDir, { recursive: true });
+    console.log('Created data directory:', dataDir);
+  } catch (error) {
+    console.error('Failed to create data directory:', error);
+  }
 }
 
 const dbPath = path.join(dataDir, 'customer-club.db');
