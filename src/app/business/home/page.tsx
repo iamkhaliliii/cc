@@ -296,28 +296,80 @@ export default function BusinessHome() {
           </div>
         </div>
 
-        {/* Permission Error */}
+        {/* Permission Error with Instructions */}
         {permissionError && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
-            <div className="flex gap-3">
-              <div className="flex-shrink-0">
-                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-red-800 mb-1">خطا در دسترسی</h4>
-                <p className="text-sm text-red-700">{permissionError}</p>
-                {cameraPermission === 'denied' && (
-                  <button
-                    onClick={checkCameraPermissions}
-                    className="mt-3 text-sm text-red-600 hover:text-red-700 font-medium underline"
-                  >
-                    تلاش مجدد
-                  </button>
-                )}
+          <div className="space-y-3">
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-red-800 mb-1">خطا در دسترسی</h4>
+                  <p className="text-sm text-red-700">{permissionError}</p>
+                  {cameraPermission === 'denied' && (
+                    <button
+                      onClick={checkCameraPermissions}
+                      className="mt-3 text-sm text-red-600 hover:text-red-700 font-medium underline"
+                    >
+                      تلاش مجدد
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
+
+            {/* Camera Permission Guide */}
+            {cameraPermission === 'denied' && (
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  راهنمای فعال‌سازی دوربین
+                </h4>
+                
+                {/* Chrome/Android Guide */}
+                <div className="mb-4 text-sm">
+                  <p className="font-semibold text-blue-800 mb-2">📱 برای Chrome (Android):</p>
+                  <ol className="text-blue-700 space-y-1 mr-4 list-decimal">
+                    <li>روی آیکون قفل 🔒 یا اطلاعات ⓘ کنار آدرس سایت کلیک کنید</li>
+                    <li>گزینه "دوربین" یا "Camera" را پیدا کنید</li>
+                    <li>آن را روی "مجاز" یا "Allow" قرار دهید</li>
+                    <li>صفحه را رفرش کنید (F5 یا کشیدن به پایین)</li>
+                  </ol>
+                </div>
+
+                {/* Safari/iOS Guide */}
+                <div className="text-sm">
+                  <p className="font-semibold text-blue-800 mb-2">🍎 برای Safari (iPhone):</p>
+                  <ol className="text-blue-700 space-y-1 mr-4 list-decimal">
+                    <li>روی "aA" کنار آدرس سایت در بالا ضربه بزنید</li>
+                    <li>گزینه "Website Settings" را انتخاب کنید</li>
+                    <li>روی "Camera" ضربه بزنید</li>
+                    <li>گزینه "Allow" را انتخاب کنید</li>
+                    <li>صفحه را رفرش کنید</li>
+                  </ol>
+                  <div className="mt-3 p-3 bg-blue-100 rounded-lg">
+                    <p className="text-xs text-blue-900">
+                      <strong>نکته:</strong> اگر گزینه دوربین نمایش داده نشد، ابتدا روی دکمه "شروع اسکن" کلیک کنید تا درخواست دسترسی نمایش داده شود.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Alternative Option */}
+                <div className="mt-4 pt-4 border-t border-blue-200">
+                  <button
+                    onClick={() => setUseFallbackMode(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    استفاده از حالت آپلود تصویر به جای دوربین مستقیم
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
