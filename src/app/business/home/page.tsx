@@ -274,24 +274,59 @@ export default function BusinessHome() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    console.log('File selected:', file.name, file.type, file.size);
+    setPermissionError("در حال پردازش تصویر...");
+
     try {
+      // Create image element to load the file
+      const img = new Image();
+      const imageUrl = URL.createObjectURL(file);
+      
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = imageUrl;
+      });
+
+      console.log('Image loaded:', img.width, 'x', img.height);
+
+      // Try to decode QR from image
       const reader = new BrowserQRCodeReader();
-      const result = await reader.decodeFromImageUrl(URL.createObjectURL(file));
+      const result = await reader.decodeFromImageElement(img);
+      
+      console.log('QR decoded:', result.getText());
+      
+      // Clean up
+      URL.revokeObjectURL(imageUrl);
       
       try {
         const data = JSON.parse(result.getText());
+        console.log('Parsed QR data:', data);
+        
         if (data.type === "customer") {
           setScannedData(data);
           setPermissionError("");
         } else {
-          setPermissionError("QR code معتبر نیست");
+          setPermissionError(`QR code معتبر نیست. نوع: ${data.type}`);
         }
-      } catch {
-        setPermissionError("QR code معتبر نیست");
+      } catch (parseError) {
+        console.error("JSON parse error:", parseError);
+        setPermissionError("فرمت QR code اشتباه است");
       }
     } catch (error) {
       console.error("Error reading QR from image:", error);
-      setPermissionError("خطا در خواندن QR code از تصویر");
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      setPermissionError(`خطا در خواندن QR code: ${errorMsg}`);
+      
+      // Suggest what might be wrong
+      if (errorMsg.includes('NotFoundException') || errorMsg.includes('not found')) {
+        setPermissionError("QR code در تصویر پیدا نشد. لطفاً تصویر واضح‌تری انتخاب کنید.");
+      }
+    }
+
+    // Reset file input for re-upload
+    if (e.target) {
+      e.target.value = '';
     }
   };
 
