@@ -133,6 +133,16 @@ export default function BusinessCustomerLogin() {
               {loading ? "در حال ورود..." : "ورود"}
             </button>
           </form>
+
+          {/* Footer Links */}
+          <div className="mt-6 space-y-3">
+            <button className="w-full text-blue-600 hover:text-blue-700 text-sm font-medium py-2 rounded-lg hover:bg-blue-50 transition-colors">
+              ثبت‌نام
+            </button>
+            <button className="w-full text-slate-600 hover:text-slate-700 text-sm py-2 rounded-lg hover:bg-slate-50 transition-colors">
+              فراموشی رمز عبور
+            </button>
+          </div>
         </div>
       </div>
     </div>
