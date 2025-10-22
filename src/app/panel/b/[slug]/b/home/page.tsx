@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { BrowserQRCodeReader } from "@zxing/browser";
 
 type Tab = "home" | "customers" | "scan" | "settings" | "profile";
+type ScanMethod = "menu" | "qr-scan" | "qr-upload" | "search" | "phone" | "card" | "customer-id";
 
 interface BusinessUser {
   id: number;
@@ -34,9 +35,14 @@ export default function BusinessStaffHome() {
   const slug = params.slug as string;
   const [user, setUser] = useState<BusinessUser | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("home");
+  const [scanMethod, setScanMethod] = useState<ScanMethod>("menu");
   const [scannedData, setScannedData] = useState<CustomerData | null>(null);
   const [scanning, setScanning] = useState(false);
   const [cameraMode, setCameraMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [customerId, setCustomerId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
@@ -198,10 +204,20 @@ export default function BusinessStaffHome() {
         {activeTab === "customers" && <CustomersTab />}
         {activeTab === "scan" && (
           <ScanTab 
+            scanMethod={scanMethod}
+            setScanMethod={setScanMethod}
             scanning={scanning}
             cameraMode={cameraMode}
             scannedData={scannedData}
             setScannedData={setScannedData}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
+            cardNumber={cardNumber}
+            setCardNumber={setCardNumber}
+            customerId={customerId}
+            setCustomerId={setCustomerId}
             fileInputRef={fileInputRef}
             videoRef={videoRef}
             handleFileUpload={handleFileUpload}
@@ -334,10 +350,20 @@ function CustomersTab() {
 }
 
 function ScanTab({ 
+  scanMethod,
+  setScanMethod,
   scanning,
   cameraMode,
   scannedData, 
-  setScannedData, 
+  setScannedData,
+  searchQuery,
+  setSearchQuery,
+  phoneNumber,
+  setPhoneNumber,
+  cardNumber,
+  setCardNumber,
+  customerId,
+  setCustomerId,
   fileInputRef,
   videoRef,
   handleFileUpload,
@@ -345,10 +371,20 @@ function ScanTab({
   handleStopCamera,
   handleVerifyCustomer 
 }: { 
+  scanMethod: ScanMethod;
+  setScanMethod: (method: ScanMethod) => void;
   scanning: boolean;
   cameraMode: boolean;
   scannedData: CustomerData | null;
   setScannedData: (data: CustomerData | null) => void;
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  phoneNumber: string;
+  setPhoneNumber: (p: string) => void;
+  cardNumber: string;
+  setCardNumber: (c: string) => void;
+  customerId: string;
+  setCustomerId: (id: string) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -358,6 +394,260 @@ function ScanTab({
 }) {
   return (
     <div className="p-4 space-y-4">
+      {/* Method Selection Menu */}
+      {scanMethod === "menu" && !scannedData && (
+        <div className="space-y-3">
+          <h2 className="text-lg font-bold text-slate-800 mb-4">روش شناسایی مشتری</h2>
+          
+          {/* QR Options */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+              QR Code
+            </h3>
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  setScanMethod("qr-scan");
+                  handleStartCamera();
+                }}
+                className="w-full text-right px-4 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-slate-800">اسکن با دوربین</p>
+                  <p className="text-xs text-slate-500">استفاده از دوربین دستگاه</p>
+                </div>
+              </button>
+              <button
+                onClick={() => {
+                  setScanMethod("qr-upload");
+                  fileInputRef.current?.click();
+                }}
+                className="w-full text-right px-4 py-3 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-slate-800">آپلود عکس QR</p>
+                  <p className="text-xs text-slate-500">انتخاب از گالری</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Search & Number Options */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              </svg>
+              شماره
+            </h3>
+            <div className="space-y-2">
+              <button
+                onClick={() => setScanMethod("search")}
+                className="w-full text-right px-4 py-3 rounded-lg hover:bg-purple-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-slate-800">جستجو</p>
+                  <p className="text-xs text-slate-500">جستجو با نام یا شماره</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setScanMethod("phone")}
+                className="w-full text-right px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-slate-800">شماره موبایل</p>
+                  <p className="text-xs text-slate-500">وارد کردن شماره تلفن</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setScanMethod("card")}
+                className="w-full text-right px-4 py-3 rounded-lg hover:bg-pink-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-slate-800">شماره کارت</p>
+                  <p className="text-xs text-slate-500">شماره کارت باشگاه</p>
+                </div>
+              </button>
+              <button
+                onClick={() => setScanMethod("customer-id")}
+                className="w-full text-right px-4 py-3 rounded-lg hover:bg-cyan-50 transition-colors flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-slate-800">شماره مشتری</p>
+                  <p className="text-xs text-slate-500">کد اختصاصی مشتری</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search Method */}
+      {scanMethod === "search" && !scannedData && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
+            ← بازگشت
+          </button>
+          <h3 className="text-lg font-bold text-slate-800 mb-4">جستجوی مشتری</h3>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="نام یا شماره مشتری..."
+            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-purple-500 focus:outline-none"
+          />
+          <button className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-lg">
+            جستجو
+          </button>
+        </div>
+      )}
+
+      {/* Phone Method */}
+      {scanMethod === "phone" && !scannedData && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
+            ← بازگشت
+          </button>
+          <h3 className="text-lg font-bold text-slate-800 mb-4">شماره موبایل</h3>
+          <input
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="09123456789"
+            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-orange-500 focus:outline-none text-left"
+            dir="ltr"
+          />
+          <button className="w-full mt-4 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg">
+            جستجو
+          </button>
+        </div>
+      )}
+
+      {/* Card Method */}
+      {scanMethod === "card" && !scannedData && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
+            ← بازگشت
+          </button>
+          <h3 className="text-lg font-bold text-slate-800 mb-4">شماره کارت</h3>
+          <input
+            type="text"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
+            placeholder="1234-5678-9012-3456"
+            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-pink-500 focus:outline-none text-left"
+            dir="ltr"
+          />
+          <button className="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 rounded-lg">
+            جستجو
+          </button>
+        </div>
+      )}
+
+      {/* Customer ID Method */}
+      {scanMethod === "customer-id" && !scannedData && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
+            ← بازگشت
+          </button>
+          <h3 className="text-lg font-bold text-slate-800 mb-4">شماره مشتری</h3>
+          <input
+            type="text"
+            value={customerId}
+            onChange={(e) => setCustomerId(e.target.value)}
+            placeholder="کد مشتری..."
+            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-cyan-500 focus:outline-none"
+          />
+          <button className="w-full mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg">
+            جستجو
+          </button>
+        </div>
+      )}
+
+      {/* QR Scan with Camera */}
+      {scanMethod === "qr-scan" && scanning && cameraMode && !scannedData && (
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+          <button onClick={() => {
+            handleStopCamera();
+            setScanMethod("menu");
+          }} className="text-slate-600 mb-4">
+            ← بازگشت
+          </button>
+          <div className="mb-4 text-center">
+            <h3 className="text-lg font-bold text-slate-800 mb-2">در حال اسکن...</h3>
+            <p className="text-sm text-slate-600">QR را در کادر قرار دهید</p>
+          </div>
+          
+          <div className="relative rounded-xl overflow-hidden bg-black mb-4">
+            <video
+              ref={videoRef}
+              className="w-full h-auto max-h-[400px]"
+              playsInline
+              autoPlay
+              muted
+              style={{ objectFit: 'cover' }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-64 h-64 border-4 border-emerald-500 rounded-2xl"></div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              handleStopCamera();
+              setScanMethod("menu");
+            }}
+            className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 px-6 rounded-xl border border-red-200 transition-colors"
+          >
+            لغو اسکن
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(e) => {
+          handleFileUpload(e);
+          setScanMethod("menu");
+        }}
+        className="hidden"
+      />
       {/* Camera Scanner */}
       {scanning && cameraMode && !scannedData && (
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
