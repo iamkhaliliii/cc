@@ -58,12 +58,13 @@ export async function seedTestBusiness() {
 
     // Create test business
     const insertBusinessStmt = db.prepare(`
-      INSERT INTO businesses (name, phone, email, address)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO businesses (name, slug, phone, email, address)
+      VALUES (?, ?, ?, ?, ?)
     `);
 
     const businessResult = insertBusinessStmt.run(
-      "فروشگاه تستی",
+      "میخک نقره‌ای",
+      "mikhak-noghreei",
       "02144556677",
       "business@test.com",
       "تهران، خیابان ولیعصر"

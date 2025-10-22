@@ -109,6 +109,7 @@ function initDatabase() {
     CREATE TABLE IF NOT EXISTS businesses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(100) NOT NULL,
+      slug VARCHAR(100) UNIQUE NOT NULL,
       phone VARCHAR(20) UNIQUE NOT NULL,
       email VARCHAR(100),
       address TEXT,
