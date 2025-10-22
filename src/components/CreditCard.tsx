@@ -138,37 +138,52 @@ export default function CreditCard({
             </div>
 
             {/* Card Content */}
-            <div className="relative z-10 h-full p-6">
+            <div className="relative z-10 h-full">
               {/* Black Magnetic Strip */}
               <div className="absolute top-0 left-0 w-full h-12 bg-black"></div>
 
-              {/* Middle Section */}
-              <div className="absolute top-16 left-0 right-0 px-6 flex items-start justify-between">
-                {/* CVV */}
-                <div className="w-28">
-                  <p className="text-[9px] uppercase text-white/70 mb-1">CVV</p>
-                  <div className="bg-white/90 rounded-md h-9 px-3 flex items-center justify-end">
-                    <p className="text-black font-mono font-bold text-lg tracking-widest">***</p>
+              {/* Main Content Area */}
+              <div className="absolute top-16 left-0 right-0 bottom-0 px-6 flex justify-between">
+                {/* Left Side - Text */}
+                <div className="flex flex-col justify-between py-4">
+                  {/* Card Info */}
+                  <div className="text-white space-y-2">
+                    <div>
+                      <p className="text-[9px] uppercase opacity-70">نام دارنده</p>
+                      <p className="text-sm font-bold">{userName}</p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase opacity-70">کسب‌وکار</p>
+                      <p className="text-xs font-medium opacity-90">{businessName}</p>
+                    </div>
+                  </div>
+
+                  {/* Terms */}
+                  <div className="text-white text-[9px] leading-relaxed max-w-[200px]">
+                    <p className="opacity-80">
+                      استفاده از این کارت منوط به قوانین باشگاه مشتریان است.
+                    </p>
                   </div>
                 </div>
 
-                {/* QR Code */}
-                <div>
-                  <p className="text-[9px] uppercase text-white/70 mb-1 text-left">کد QR</p>
-                  <div className="bg-white p-1.5 rounded-lg shadow-lg">
-                    <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
+                {/* Right Side - QR & CVV */}
+                <div className="flex flex-col items-end gap-3 pt-4">
+                  {/* QR Code */}
+                  <div>
+                    <p className="text-[9px] uppercase text-white/70 mb-1 text-right">کد شناسایی</p>
+                    <div className="bg-white p-1.5 rounded-lg shadow-lg">
+                      <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
+                    </div>
+                  </div>
+
+                  {/* CVV */}
+                  <div className="w-24">
+                    <p className="text-[9px] uppercase text-white/70 mb-1 text-right">CVV</p>
+                    <div className="bg-white/95 rounded-md h-8 px-3 flex items-center justify-center">
+                      <p className="text-black font-mono font-bold text-base tracking-widest">***</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Terms */}
-              <div className="absolute bottom-6 left-6 right-6 text-white text-[10px] leading-relaxed">
-                <p className="mb-1.5 opacity-90 font-medium">
-                  این کارت متعلق به {businessName} می‌باشد.
-                </p>
-                <p className="opacity-75 text-[9px]">
-                  استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
-                </p>
               </div>
             </div>
           </div>
