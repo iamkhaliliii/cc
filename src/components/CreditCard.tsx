@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import QRCode from "qrcode";
 
 interface CreditCardProps {
   userName: string;
@@ -8,6 +9,8 @@ interface CreditCardProps {
   points: number;
   userId: number;
   phone: string;
+  businessId: number;
+  businessSlug: string;
   expiryDate?: string;
   backgroundImage?: string;
 }
@@ -18,17 +21,46 @@ export default function CreditCard({
   points,
   userId,
   phone,
+  businessId,
+  businessSlug,
   expiryDate = "12/27",
   backgroundImage = "/Background.png"
 }: CreditCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // Generate exactly 16-digit card number
-  // phone without 0: 10 digits + userId padded to 6 digits = 16 digits
-  const phoneDigits = phone.substring(1); // Remove leading 0
+  const phoneDigits = phone.substring(1);
   const userIdPadded = userId.toString().padStart(6, '0');
-  const cardNumber = phoneDigits + userIdPadded; // Exactly 16 digits
+  const cardNumber = phoneDigits + userIdPadded;
   const formattedCardNumber = cardNumber.match(/.{1,4}/g)?.join(' ') || '';
+
+  // Generate QR code for back of card
+  useEffect(() => {
+    if (qrCanvasRef.current && isFlipped) {
+      const qrData = JSON.stringify({
+        userId,
+        phone,
+        name: userName,
+        businessId,
+        businessSlug,
+        type: "customer"
+      });
+
+      QRCode.toCanvas(
+        qrCanvasRef.current,
+        qrData,
+        {
+          width: 100,
+          margin: 1,
+          color: {
+            dark: "#1e40af",
+            light: "#ffffff"
+          }
+        }
+      );
+    }
+  }, [isFlipped, userId, phone, userName, businessId, businessSlug]);
 
   return (
     <div 
@@ -102,7 +134,7 @@ export default function CreditCard({
               style={{ backgroundImage: `url(${backgroundImage})` }}
             >
               {/* Dark overlay for back */}
-              <div className="absolute inset-0 bg-black/70"></div>
+              <div className="absolute inset-0 bg-black/30"></div>
             </div>
 
             {/* Card Content */}
@@ -110,18 +142,25 @@ export default function CreditCard({
               {/* Black Magnetic Strip */}
               <div className="absolute top-8 left-0 w-full h-14 bg-black"></div>
 
-              {/* CVV */}
-              <div className="absolute top-28 left-0 right-0 px-6">
-                <div className="bg-slate-100 rounded-lg h-10 p-3 flex items-center justify-end relative">
-                  <p className="text-xs uppercase text-slate-500 absolute left-3 top-1">CVV</p>
-                  <p className="text-black font-mono font-bold tracking-widest">***</p>
+              {/* CVV - Smaller */}
+              <div className="absolute top-28 left-6 w-24">
+                <div className="bg-slate-100 rounded h-8 px-3 py-1.5 flex items-center justify-end">
+                  <p className="text-[8px] uppercase text-slate-500 absolute left-2 top-0.5">CVV</p>
+                  <p className="text-black font-mono font-bold text-sm">***</p>
+                </div>
+              </div>
+
+              {/* QR Code */}
+              <div className="absolute top-24 right-6">
+                <div className="bg-white p-2 rounded-lg">
+                  <canvas ref={qrCanvasRef} className="w-24 h-24"></canvas>
                 </div>
               </div>
 
               {/* Terms */}
-              <div className="absolute bottom-6 left-6 right-6 text-white text-[9px] leading-relaxed">
-                <p className="mb-2 opacity-90">
-                  این کارت متعلق به {businessName} می‌باشد. استفاده غیرمجاز از این کارت جرم است.
+              <div className="absolute bottom-6 left-6 right-6 text-white text-[9px]">
+                <p className="opacity-90">
+                  این کارت متعلق به {businessName} می‌باشد.
                 </p>
                 <p className="opacity-80">
                   استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
