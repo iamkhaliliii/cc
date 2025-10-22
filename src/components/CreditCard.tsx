@@ -145,33 +145,33 @@ export default function CreditCard({
               <div className="absolute top-0 left-0 w-full h-12 bg-black"></div>
 
               {/* Main Content Area */}
-              <div className="absolute top-14 sm:top-16 left-0 right-0 bottom-0 px-4 sm:px-6 flex justify-between">
+              <div className="absolute top-12 left-0 right-0 bottom-0 px-3 sm:px-6 flex justify-between gap-2">
                 {/* Left Side - Text & CVV */}
-                <div className="flex flex-col justify-between py-2 sm:py-4 max-w-[55%] sm:max-w-[60%]">
+                <div className="flex flex-col justify-between py-2 sm:py-4 flex-1 min-w-0">
                   {/* Text */}
-                  <div className="text-white text-[9px] sm:text-[10px] leading-relaxed">
+                  <div className="text-white text-[8px] sm:text-[10px] leading-tight sm:leading-relaxed">
                     <p className="mb-1 sm:mb-1.5 opacity-90 font-medium">
                       این کارت متعلق به {businessName} می‌باشد.
                     </p>
-                    <p className="opacity-75 text-[8px] sm:text-[9px]">
+                    <p className="opacity-75 text-[7px] sm:text-[9px]">
                       استفاده از این کارت منوط به قوانین باشگاه مشتریان است.
                     </p>
                   </div>
 
                   {/* CVV - Small and minimal */}
                   <div className="text-right">
-                    <p className="text-[7px] sm:text-[8px] text-white/60 mb-0.5 sm:mb-1">CVV</p>
-                    <div className="bg-white/90 rounded px-2 sm:px-2.5 py-0.5 sm:py-1 inline-block">
-                      <p className="text-black font-mono font-bold text-[10px] sm:text-xs tracking-wide">***</p>
+                    <p className="text-[7px] sm:text-[8px] text-white/60 mb-0.5">CVV</p>
+                    <div className="bg-white/90 rounded px-1.5 sm:px-2.5 py-0.5 sm:py-1 inline-block">
+                      <p className="text-black font-mono font-bold text-[9px] sm:text-xs tracking-wide">***</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Right Side - QR */}
-                <div className="flex flex-col items-end py-2 sm:py-4">
+                <div className="flex items-start py-2 sm:py-4">
                   {/* QR Code */}
-                  <div className="bg-white p-1 sm:p-1.5 rounded-lg shadow-lg">
-                    <canvas ref={qrCanvasRef} className="w-16 h-16 sm:w-20 sm:h-20"></canvas>
+                  <div className="bg-white p-1 sm:p-1.5 rounded-md sm:rounded-lg shadow-lg">
+                    <canvas ref={qrCanvasRef} className="w-14 h-14 sm:w-20 sm:h-20"></canvas>
                   </div>
                 </div>
               </div>
