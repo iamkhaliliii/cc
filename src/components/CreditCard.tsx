@@ -6,7 +6,8 @@ interface CreditCardProps {
   userName: string;
   businessName: string;
   points: number;
-  cardNumber: string;
+  userId: number;
+  phone: string;
   expiryDate?: string;
 }
 
@@ -14,14 +15,19 @@ export default function CreditCard({
   userName,
   businessName,
   points,
-  cardNumber,
+  userId,
+  phone,
   expiryDate = "12/27"
 }: CreditCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  // Generate 16-digit card number from phone (11 digits) + userId (padded to 5 digits)
+  const cardNumber = phone.substring(1) + userId.toString().padStart(5, '0'); // 10 + 5 = 15, add one more
+  const formattedCardNumber = cardNumber.padEnd(16, '0').match(/.{1,4}/g)?.join(' ') || '';
+
   return (
     <div 
-      className="relative w-full aspect-[1.586/1] cursor-pointer perspective-1000"
+      className="relative w-full max-w-md mx-auto aspect-[1.586/1] cursor-pointer perspective-1000"
       onClick={() => setIsFlipped(!isFlipped)}
     >
       <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${
@@ -74,12 +80,11 @@ export default function CreditCard({
                 <path d="M13.74 7.563c.231.039.442.164.594.343 3.508 4.059 5.625 9.371 5.625 15.157 0 5.785-2.113 11.097-5.625 15.156-.363.422-1 .472-1.422.109-.422-.363-.472-1-.109-1.422 3.211-3.711 5.156-8.551 5.156-13.843 0-5.293-1.949-10.133-5.156-13.844-.27-.309-.324-.75-.141-1.114.188-.367.578-.582.985-.542h.093z"/>
               </svg>
 
-              {/* Card Number */}
-              <div className="flex justify-between items-center text-2xl font-mono tracking-wider my-2">
-                <span>{cardNumber.slice(0, 4)}</span>
-                <span>{cardNumber.slice(4, 8)}</span>
-                <span>{cardNumber.slice(8, 12)}</span>
-                <span>{cardNumber.slice(12, 16)}</span>
+              {/* Card Number with Emboss Effect */}
+              <div className="my-3">
+                <p className="text-2xl sm:text-3xl font-mono tracking-[0.3em] emboss-text select-none" dir="ltr">
+                  {formattedCardNumber}
+                </p>
               </div>
 
               {/* Bottom Info */}

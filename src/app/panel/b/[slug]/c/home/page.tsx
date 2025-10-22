@@ -138,7 +138,8 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
         userName={user.name}
         businessName={business.name}
         points={user.points}
-        cardNumber={user.phone.replace(/(\d{4})(\d{4})(\d{4})/g, '$1$2$3' + user.id.toString().padStart(4, '0'))}
+        userId={user.id}
+        phone={user.phone}
       />
 
       {/* Old card backup */}
