@@ -46,10 +46,7 @@ export default function CreditCard({
         <div className="absolute w-full h-full backface-hidden">
           <div className={`relative w-full h-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-3xl overflow-hidden shadow-2xl`}>
             {/* Decorative Strips */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-              <div className="absolute -right-10 top-0 bottom-0 w-[200px] bg-gradient-to-b from-red-600 to-red-700 transform skew-x-[20deg] shadow-lg"></div>
-              <div className="absolute -right-16 top-0 bottom-0 w-[180px] bg-gradient-to-b from-red-500 to-red-600 transform skew-x-[-15deg]"></div>
-            </div>
+
 
             {/* Card Content */}
             <div className="relative z-10 h-full p-6 flex flex-col justify-between text-white">
