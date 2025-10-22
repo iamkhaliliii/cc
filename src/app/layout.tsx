@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import "../lib/init-db";
+
+const shareTechMono = Share_Tech_Mono({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-share-tech-mono",
+});
 
 const vazirmatn = localFont({
   src: [
@@ -38,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body
-        className={`${vazirmatn.variable} font-sans antialiased`}
+        className={`${vazirmatn.variable} ${shareTechMono.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         {children}
