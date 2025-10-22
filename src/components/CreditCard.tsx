@@ -65,11 +65,11 @@ export default function CreditCard({
 
 
               {/* Card Number with Emboss Effect */}
-              <div className="my-1 flex items-center justify-between w-full">
+              <div className="my-1 flex items-center justify-between w-full gap-1 sm:gap-2 md:gap-3">
                 {cardNumber.match(/.{1,4}/g)?.map((group, index) => (
                   <span 
                     key={index}
-                    className="text-2xl sm:text-3xl md:text-4xl font-mono emboss-text select-none"
+                    className="text-3xl sm:text-2xl md:text-4xl font-mono emboss-text select-none flex-1 text-center"
                     dir="ltr"
                   >
                     {group}

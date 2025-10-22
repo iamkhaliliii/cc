@@ -152,21 +152,27 @@
   overflow: visible;
 }
 
-/* Responsive card sizing */
+/* Responsive card number sizing - bigger on mobile */
+@media (min-width: 641px) and (max-width: 768px) {
+  .emboss-text {
+    font-size: 1.5rem !important;
+  }
+}
+
 @media (max-width: 640px) {
   .emboss-text {
+    font-size: 1.875rem !important; /* Bigger on mobile */
+  }
+}
+
+@media (max-width: 400px) {
+  .emboss-text {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .emboss-text {
     font-size: 1.25rem !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .emboss-text {
-    font-size: 1.1rem !important;
-  }
-}
-
-@media (max-width: 380px) {
-  .emboss-text {
-    font-size: 0.95rem !important;
   }
 }
