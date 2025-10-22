@@ -64,7 +64,7 @@ export async function seedTestBusiness() {
 
     const businessResult = insertBusinessStmt.run(
       "میخک نقره‌ای",
-      "mikhak-noghreei",
+      "mikhak",
       "02144556677",
       "business@test.com",
       "تهران، خیابان ولیعصر"

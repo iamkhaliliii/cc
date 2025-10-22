@@ -25,7 +25,7 @@ export default function Home() {
 
         {/* CTA Buttons */}
         <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
-          <Link href="/panel/b/mikhak-noghreei">
+          <Link href="/panel/b/mikhak">
             <button className="w-full bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-4 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex flex-col items-center justify-center gap-2 group min-h-[100px]">
               <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -52,7 +52,7 @@ export default function Home() {
             </button>
           </Link>
 
-          <Link href="/panel/b/mikhak-noghreei/c/login">
+          <Link href="/panel/b/mikhak/c/login">
             <button className="w-full bg-gradient-to-br from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-4 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex flex-col items-center justify-center gap-2 group min-h-[100px]">
               <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
