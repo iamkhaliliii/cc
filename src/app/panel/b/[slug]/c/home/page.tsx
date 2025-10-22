@@ -329,6 +329,28 @@ function QRCodeTab({ user, business }: { user: User; business: Business }) {
 
 function ProfileTab({ user, business, slug }: { user: User; business: Business; slug: string }) {
   const router = useRouter();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Check saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem(`customerUser_${slug}`);
@@ -372,7 +394,10 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
           </svg>
         </button>
 
-        <button className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+        <button 
+          onClick={toggleDarkMode}
+          className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors"
+        >
           <div className="flex items-center gap-3">
             <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -380,9 +405,9 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
             <span className="font-medium text-slate-700">حالت شب / روز</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">روز</span>
-            <div className="w-12 h-6 bg-slate-200 rounded-full relative">
-              <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow"></div>
+            <span className="text-xs text-slate-500">{isDark ? 'شب' : 'روز'}</span>
+            <div className={`w-12 h-6 rounded-full relative transition-colors ${isDark ? 'bg-blue-600' : 'bg-slate-200'}`}>
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${isDark ? 'right-1' : 'left-1'}`}></div>
             </div>
           </div>
         </button>
