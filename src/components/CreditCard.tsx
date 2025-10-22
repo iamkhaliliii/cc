@@ -9,6 +9,9 @@ interface CreditCardProps {
   userId: number;
   phone: string;
   expiryDate?: string;
+  gradientFrom?: string;
+  gradientVia?: string;
+  gradientTo?: string;
 }
 
 export default function CreditCard({
@@ -17,7 +20,10 @@ export default function CreditCard({
   points,
   userId,
   phone,
-  expiryDate = "12/27"
+  expiryDate = "12/27",
+  gradientFrom = "from-slate-800",
+  gradientVia = "via-slate-700",
+  gradientTo = "to-slate-900"
 }: CreditCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -38,7 +44,7 @@ export default function CreditCard({
       }`}>
         {/* Front of Card */}
         <div className="absolute w-full h-full backface-hidden">
-          <div className="relative w-full h-full bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 rounded-3xl overflow-hidden shadow-2xl">
+          <div className={`relative w-full h-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-3xl overflow-hidden shadow-2xl`}>
             {/* Decorative Strips */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
               <div className="absolute -right-10 top-0 bottom-0 w-[200px] bg-gradient-to-b from-red-600 to-red-700 transform skew-x-[20deg] shadow-lg"></div>
@@ -65,12 +71,11 @@ export default function CreditCard({
 
 
               {/* Card Number with Emboss Effect */}
-              <div className="my-1 flex items-center justify-between w-full gap-0.5 sm:gap-2 md:gap-4">
+              <div className="my-1 flex items-center justify-between w-full gap-1 sm:gap-2 md:gap-3">
                 {cardNumber.match(/.{1,4}/g)?.map((group, index) => (
                   <span 
                     key={index}
-                    className="emboss-text select-none flex-1 text-center"
-                    style={{ fontSize: 'inherit' }}
+                    className="text-3xl sm:text-2xl md:text-4xl font-mono emboss-text select-none flex-1 text-center"
                     dir="ltr"
                   >
                     {group}

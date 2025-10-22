@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Changa } from "next/font/google";
 import "./globals.css";
 import "../lib/init-db";
-
-const changa = Changa({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin", "arabic"],
-  variable: "--font-changa",
-});
 
 const vazirmatn = localFont({
   src: [
@@ -45,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body
-        className={`${vazirmatn.variable} ${changa.variable} font-sans antialiased`}
+        className={`${vazirmatn.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         {children}

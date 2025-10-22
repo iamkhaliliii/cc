@@ -140,6 +140,9 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
         points={user.points}
         userId={user.id}
         phone={user.phone}
+        gradientFrom="from-pink-600"
+        gradientVia="via-purple-600"
+        gradientTo="to-blue-700"
       />
 
       {/* Old card backup */}
