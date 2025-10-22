@@ -144,8 +144,9 @@ export default function CreditCard({
 
               {/* Main Content Area */}
               <div className="absolute top-16 left-0 right-0 bottom-0 px-6 flex justify-between">
-                {/* Left Side - Text */}
+                {/* Left Side - Text & CVV */}
                 <div className="flex flex-col justify-between py-4 max-w-[60%]">
+                  {/* Text */}
                   <div className="text-white text-[10px] leading-relaxed">
                     <p className="mb-1.5 opacity-90 font-medium">
                       این کارت متعلق به {businessName} می‌باشد.
@@ -154,21 +155,21 @@ export default function CreditCard({
                       استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
                     </p>
                   </div>
-                </div>
-
-                {/* Right Side - QR at top, CVV at bottom */}
-                <div className="flex flex-col justify-between items-end py-4">
-                  {/* QR Code */}
-                  <div className="bg-white p-1.5 rounded-lg shadow-lg">
-                    <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
-                  </div>
 
                   {/* CVV - Small and minimal */}
                   <div className="text-right">
                     <p className="text-[8px] text-white/60 mb-1">CVV</p>
-                    <div className="bg-white/90 rounded px-2.5 py-1">
+                    <div className="bg-white/90 rounded px-2.5 py-1 inline-block">
                       <p className="text-black font-mono font-bold text-xs tracking-wide">***</p>
                     </div>
+                  </div>
+                </div>
+
+                {/* Right Side - QR */}
+                <div className="flex flex-col items-end py-4">
+                  {/* QR Code */}
+                  <div className="bg-white p-1.5 rounded-lg shadow-lg">
+                    <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
                   </div>
                 </div>
               </div>
