@@ -278,7 +278,6 @@ export default function BusinessStaffHome() {
               </button>
             </div>
           </div>
-        </div>
       </div>
 
       {/* Content Area */}
