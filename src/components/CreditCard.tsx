@@ -160,19 +160,13 @@ export default function CreditCard({
                 {/* Right Side - QR & CVV */}
                 <div className="flex flex-col items-end gap-3 pt-4">
                   {/* QR Code */}
-                  <div>
-                    <p className="text-[9px] uppercase text-white/70 mb-1 text-right">کد شناسایی</p>
-                    <div className="bg-white p-1.5 rounded-lg shadow-lg">
-                      <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
-                    </div>
+                  <div className="bg-white p-1.5 rounded-lg shadow-lg">
+                    <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
                   </div>
 
                   {/* CVV */}
-                  <div className="w-24">
-                    <p className="text-[9px] uppercase text-white/70 mb-1 text-right">CVV</p>
-                    <div className="bg-white/95 rounded-md h-8 px-3 flex items-center justify-center">
-                      <p className="text-black font-mono font-bold text-base tracking-widest">***</p>
-                    </div>
+                  <div className="bg-white/95 rounded-md h-8 px-4 flex items-center justify-center">
+                    <p className="text-black font-mono font-bold text-base tracking-widest">***</p>
                   </div>
                 </div>
               </div>
