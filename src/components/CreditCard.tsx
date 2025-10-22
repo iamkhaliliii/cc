@@ -194,22 +194,22 @@ export default function CreditCard({
       </div>
 
       {/* Card Info Bar Below */}
-      <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+      <div className="mt-4 bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between transition-colors">
         {/* Right - Points Display */}
         <div className="text-right">
-          <p className="text-xs text-slate-500 mb-0.5">موجودی امتیاز</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-0.5">موجودی امتیاز</p>
           <div className="flex items-baseline gap-1.5">
-            <p className="text-2xl font-bold text-blue-600">{points.toLocaleString('fa-IR')}</p>
-            <p className="text-xs text-slate-600">امتیاز</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{points.toLocaleString('fa-IR')}</p>
+            <p className="text-xs text-slate-600 dark:text-slate-400">امتیاز</p>
           </div>
         </div>
 
         {/* Left - Flip Action */}
         <button
           onClick={() => setIsFlipped(!isFlipped)}
-          className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors group"
+          className="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors group"
         >
-          <div className="w-8 h-8 bg-slate-50 group-hover:bg-slate-100 rounded-lg flex items-center justify-center transition-colors">
+          <div className="w-8 h-8 bg-slate-50 dark:bg-slate-700 group-hover:bg-slate-100 dark:group-hover:bg-slate-600 rounded-lg flex items-center justify-center transition-colors">
             <img 
               src="/flip.svg" 
               alt="flip"

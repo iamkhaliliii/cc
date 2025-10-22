@@ -56,7 +56,7 @@ export default function Home() {
           </div>
 
           {/* Content - Same as mobile */}
-          <div className="relative z-10 min-h-[600px] flex flex-col justify-end p-12">
+          <div className="relative z-10 min-h-[90vh] flex flex-col justify-end p-12">
             {/* Logo - Bottom left aligned */}
             <div className="mb-8">
               <img src="/lincard.svg" alt="Linkard" className="h-14" />
