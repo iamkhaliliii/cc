@@ -43,18 +43,15 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Desktop Layout - Same as mobile but in bordered container */}
+      {/* Desktop Layout - Container with border in center */}
       <div className="hidden md:flex md:items-center md:justify-center md:min-h-screen md:p-8">
-        {/* Background for whole page in desktop */}
-        <div className="fixed inset-0 bg-gradient-to-br from-purple-900 to-indigo-900 -z-10"></div>
-        
-        <div className="relative w-full max-w-lg bg-white/10 backdrop-blur-sm rounded-[3rem] border border-white/20 overflow-hidden shadow-2xl">
+        <div className="relative w-full max-w-lg rounded-[3rem] border border-white/20 overflow-hidden shadow-2xl" style={{ backgroundColor: '#2F01B0' }}>
           {/* Background inside container */}
           <div className="absolute -top-20 left-1/2 -translate-x-1/2">
             <img 
               src="/bg.png" 
               alt="background"
-              className="w-[150vw] md:w-[800px] h-auto opacity-80"
+              className="w-[800px] h-auto"
             />
           </div>
 
