@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import QRCode from "qrcode";
+import CreditCard from "@/components/CreditCard";
 
 type Tab = "home" | "points" | "qrcode" | "profile";
 
@@ -130,27 +131,22 @@ export default function CustomerHome() {
 }
 
 function HomeTab({ user, business }: { user: User; business: Business }) {
-  const [cardPressed, setCardPressed] = useState(false);
-
   return (
     <div className="p-4 space-y-5">
       {/* Premium Credit Card */}
-      <div 
-        className="relative group cursor-pointer"
-        onTouchStart={() => setCardPressed(true)}
-        onTouchEnd={() => setCardPressed(false)}
-        onMouseDown={() => setCardPressed(true)}
-        onMouseUp={() => setCardPressed(false)}
-        onMouseLeave={() => setCardPressed(false)}
-      >
+      <CreditCard
+        userName={user.name}
+        businessName={business.name}
+        points={user.points}
+        cardNumber={user.phone.replace(/(\d{4})(\d{4})(\d{4})/g, '$1$2$3' + user.id.toString().padStart(4, '0'))}
+      />
+
+      {/* Old card backup */}
+      <div className="relative group hidden">
         {/* Card Shadow Layer */}
-        <div className={`absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-[28px] blur-xl transition-all duration-300 ${
-          cardPressed ? 'opacity-90 scale-95' : 'opacity-60 group-hover:opacity-80'
-        }`}></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-[28px] blur-xl opacity-60 group-hover:opacity-80 transition-opacity"></div>
         
-        <div className={`relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-[24px] p-6 text-white shadow-2xl aspect-[1.586/1] overflow-hidden transition-all duration-300 ${
-          cardPressed ? 'scale-[0.98]' : 'scale-100 group-hover:scale-[1.02]'
-        }`}>
+        <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-[24px] p-6 text-white shadow-2xl aspect-[1.586/1] overflow-hidden transform group-hover:scale-[1.02] transition-all duration-300">
           {/* Animated Background Pattern */}
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-white to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-pulse"></div>
