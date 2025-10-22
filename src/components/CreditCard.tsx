@@ -63,10 +63,12 @@ export default function CreditCard({
   }, [isFlipped, userId, phone, userName, businessId, businessSlug]);
 
   return (
-    <div 
-      className="relative w-full max-w-md mx-auto aspect-[1.586/1] cursor-pointer perspective-1000"
-      onClick={() => setIsFlipped(!isFlipped)}
-    >
+    <div className="relative w-full max-w-md mx-auto">
+      {/* Card with 3D flip */}
+      <div 
+        className="relative w-full aspect-[1.586/1] cursor-pointer perspective-1000"
+        onClick={() => setIsFlipped(!isFlipped)}
+      >
       <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${
         isFlipped ? 'rotate-y-180' : ''
       }`}>
@@ -174,6 +176,33 @@ export default function CreditCard({
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Card Info Bar Below */}
+      <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+        {/* Left - Flip Action */}
+        <button
+          onClick={() => setIsFlipped(!isFlipped)}
+          className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors group"
+        >
+          <div className="w-10 h-10 bg-slate-100 group-hover:bg-blue-50 rounded-xl flex items-center justify-center transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </div>
+          <span className="text-sm font-medium">
+            {isFlipped ? 'نمایش جلو' : 'نمایش پشت'}
+          </span>
+        </button>
+
+        {/* Right - Points Display */}
+        <div className="text-left">
+          <p className="text-xs text-slate-500 mb-0.5">موجودی امتیاز</p>
+          <div className="flex items-baseline gap-1.5">
+            <p className="text-2xl font-bold text-blue-600">{points.toLocaleString('fa-IR')}</p>
+            <p className="text-xs text-slate-600">امتیاز</p>
           </div>
         </div>
       </div>
