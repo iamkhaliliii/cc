@@ -49,9 +49,9 @@ export default function BusinessCustomerLogin() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("customerUser", JSON.stringify(data.user));
-        localStorage.setItem("currentBusiness", JSON.stringify(business));
-        router.push("/customer/home");
+        localStorage.setItem(`customerUser_${slug}`, JSON.stringify(data.user));
+        localStorage.setItem(`currentBusiness_${slug}`, JSON.stringify(business));
+        router.push(`/business/${slug}/customer/home`);
       } else {
         setError(data.error || "خطا در ورود");
       }
