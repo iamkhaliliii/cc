@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { BrowserQRCodeReader } from "@zxing/browser";
 
-type Tab = "home" | "customers" | "scan" | "settings" | "profile";
-type ScanMethod = "menu" | "qr-scan" | "qr-upload" | "search" | "phone" | "card" | "customer-id";
+type Tab = "home" | "customers" | "scan" | "profile";
 
 interface BusinessUser {
   id: number;
@@ -34,18 +33,10 @@ export default function BusinessStaffHome() {
   const params = useParams();
   const slug = params.slug as string;
   const [user, setUser] = useState<BusinessUser | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>("home");
-  const [scanMethod, setScanMethod] = useState<ScanMethod>("menu");
+  const [activeTab, setActiveTab] = useState<Tab>("scan");
   const [scannedData, setScannedData] = useState<CustomerData | null>(null);
-  const [scanning, setScanning] = useState(false);
-  const [cameraMode, setCameraMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [customerId, setCustomerId] = useState("");
+  const [phoneSearch, setPhoneSearch] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -56,67 +47,6 @@ export default function BusinessStaffHome() {
       setUser(JSON.parse(userData));
     }
   }, [router, slug]);
-
-  useEffect(() => {
-    let isActive = true;
-    let controls: { stop: () => void } | null = null;
-
-    const startScanning = async () => {
-      if (scanning && videoRef.current && cameraMode) {
-        try {
-          if (!codeReaderRef.current) {
-            codeReaderRef.current = new BrowserQRCodeReader();
-          }
-
-          controls = await codeReaderRef.current.decodeFromVideoDevice(
-            undefined,
-            videoRef.current,
-            (result) => {
-              if (result && isActive) {
-                try {
-                  const data = JSON.parse(result.getText());
-                  if (data.type === "customer" && data.businessSlug === slug) {
-                    setScannedData(data);
-                    setScanning(false);
-                    setCameraMode(false);
-                  } else if (data.businessSlug !== slug) {
-                    alert(`این QR مربوط به کسب‌وکار دیگری است!`);
-                  }
-                } catch (err) {
-                  console.error("Invalid QR:", err);
-                }
-              }
-            }
-          );
-        } catch (error) {
-          console.error("Scanner error:", error);
-          setScanning(false);
-          setCameraMode(false);
-        }
-      }
-    };
-
-    if (scanning && cameraMode) {
-      startScanning();
-    }
-
-    return () => {
-      isActive = false;
-      if (controls) {
-        try {
-          controls.stop();
-        } catch (e) {
-          console.log("Error stopping:", e);
-        }
-      }
-      const video = videoRef.current;
-      if (video && video.srcObject) {
-        const stream = video.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-      }
-    };
-  }, [scanning, cameraMode, slug]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -140,42 +70,38 @@ export default function BusinessStaffHome() {
       
       if (data.type === "customer" && data.businessSlug === slug) {
         setScannedData(data);
-        setActiveTab("scan");
-      } else if (data.businessSlug !== slug) {
-        alert(`این QR مربوط به ${data.businessSlug || 'کسب‌وکار دیگری'} است!`);
+      } else {
+        alert(`این QR مربوط به کسب‌وکار دیگری است!`);
       }
     } catch (error) {
-      console.error("Error reading QR:", error);
+      console.error("Error:", error);
       alert("خطا در خواندن QR code");
     }
 
-    if (e.target) {
-      e.target.value = '';
-    }
+    if (e.target) e.target.value = '';
   };
 
-  const handleStartCamera = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: { ideal: 'environment' } } 
+  const handlePhoneSearch = () => {
+    // Simulate finding customer by phone
+    if (phoneSearch === "09124580298") {
+      setScannedData({
+        userId: 1,
+        phone: "09124580298",
+        name: "کاربر آزمایشی",
+        businessId: user?.business_id || 0,
+        businessSlug: slug,
+        type: "customer"
       });
-      setCameraMode(true);
-      setScanning(true);
-    } catch (error) {
-      console.error("Camera error:", error);
-      alert("دسترسی به دوربین رد شد");
+    } else {
+      alert("مشتری یافت نشد");
     }
   };
 
-  const handleStopCamera = () => {
-    setScanning(false);
-    setCameraMode(false);
-  };
-
-  const handleVerifyCustomer = async () => {
+  const handleVerify = () => {
     if (!scannedData) return;
-    alert(`✅ کاربر ${scannedData.name} تایید شد!\nشماره: ${scannedData.phone}`);
+    alert(`✅ امتیاز برای ${scannedData.name} ثبت شد!`);
     setScannedData(null);
+    setPhoneSearch("");
   };
 
   const handleLogout = () => {
@@ -183,78 +109,66 @@ export default function BusinessStaffHome() {
     router.push(`/panel/b/${slug}`);
   };
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-24">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <h1 className="text-right text-sm font-medium text-slate-700">
-            {user.business.name}
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Simple Header */}
+      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <h1 className="text-base font-semibold text-slate-800">{user.business.name}</h1>
+          <button onClick={handleLogout} className="text-slate-400 hover:text-red-600 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </header>
 
-      {/* Content Area */}
-      <div className="h-[calc(100vh-9rem)] overflow-y-auto">
+      {/* Content */}
+      <div className="max-w-2xl mx-auto pb-24">
         {activeTab === "home" && <HomeTab user={user} />}
         {activeTab === "customers" && <CustomersTab />}
         {activeTab === "scan" && (
           <ScanTab 
-            scanMethod={scanMethod}
-            setScanMethod={setScanMethod}
-            scanning={scanning}
-            cameraMode={cameraMode}
             scannedData={scannedData}
             setScannedData={setScannedData}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
-            cardNumber={cardNumber}
-            setCardNumber={setCardNumber}
-            customerId={customerId}
-            setCustomerId={setCustomerId}
+            phoneSearch={phoneSearch}
+            setPhoneSearch={setPhoneSearch}
             fileInputRef={fileInputRef}
-            videoRef={videoRef}
             handleFileUpload={handleFileUpload}
-            handleStartCamera={handleStartCamera}
-            handleStopCamera={handleStopCamera}
-            handleVerifyCustomer={handleVerifyCustomer}
+            handlePhoneSearch={handlePhoneSearch}
+            handleVerify={handleVerify}
           />
         )}
-        {activeTab === "settings" && <SettingsTab />}
         {activeTab === "profile" && <ProfileTab user={user} handleLogout={handleLogout} />}
       </div>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg">
-        <div className="flex justify-around items-center h-20 max-w-lg mx-auto">
+      {/* Clean Bottom Nav */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200">
+        <div className="max-w-2xl mx-auto flex items-center h-16 px-2">
           <button
             onClick={() => setActiveTab("home")}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-all ${
               activeTab === "home" ? "text-emerald-600" : "text-slate-400"
             }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            <svg className="w-5 h-5" fill={activeTab === "home" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === "home" ? 0 : 2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            <span className="text-xs font-medium">خانه</span>
+            <span className="text-[10px] font-medium">خانه</span>
           </button>
 
           <button
             onClick={() => setActiveTab("customers")}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-all ${
               activeTab === "customers" ? "text-emerald-600" : "text-slate-400"
             }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg className="w-5 h-5" fill={activeTab === "customers" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === "customers" ? 0 : 2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <span className="text-xs font-medium">مشتریان</span>
+            <span className="text-[10px] font-medium">مشتریان</span>
           </button>
 
           <button
@@ -262,47 +176,32 @@ export default function BusinessStaffHome() {
               setScannedData(null);
               setActiveTab("scan");
             }}
-            className={`flex flex-col items-center justify-center gap-1 -mt-6 transition-all ${
-              activeTab === "scan" ? "scale-110" : "scale-100"
-            }`}
+            className="flex flex-col items-center -mt-8"
           >
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg ${
-              activeTab === "scan" 
-                ? "bg-gradient-to-br from-emerald-600 to-teal-600 text-white" 
-                : "bg-white text-emerald-600 border-2 border-emerald-200"
+            <div className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all ${
+              activeTab === "scan"
+                ? "bg-gradient-to-br from-emerald-500 to-teal-600 scale-110"
+                : "bg-white border-2 border-emerald-200"
             }`}>
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              <svg className={`w-7 h-7 ${activeTab === "scan" ? "text-white" : "text-emerald-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
-            <span className={`text-xs font-bold mt-1 ${
-              activeTab === "scan" ? "text-emerald-600" : "text-slate-600"
-            }`}>ثبت امتیاز</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("settings")}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              activeTab === "settings" ? "text-emerald-600" : "text-slate-400"
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span className="text-xs font-medium">تنظیمات</span>
+            <span className={`text-[10px] font-bold mt-1 ${activeTab === "scan" ? "text-emerald-600" : "text-slate-600"}`}>
+              ثبت
+            </span>
           </button>
 
           <button
             onClick={() => setActiveTab("profile")}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 transition-all ${
               activeTab === "profile" ? "text-emerald-600" : "text-slate-400"
             }`}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <svg className="w-5 h-5" fill={activeTab === "profile" ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === "profile" ? 0 : 2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span className="text-xs font-medium">پروفایل</span>
+            <span className="text-[10px] font-medium">پروفایل</span>
           </button>
         </div>
       </nav>
@@ -313,22 +212,21 @@ export default function BusinessStaffHome() {
 function HomeTab({ user }: { user: BusinessUser }) {
   return (
     <div className="p-4 space-y-4">
-      <div className="bg-gradient-to-br from-emerald-600 to-teal-600 rounded-2xl p-6 text-white shadow-lg">
-        <h2 className="text-2xl font-bold mb-1">{user.business.name}</h2>
-        <p className="text-sm opacity-90">خوش آمدید {user.name}</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-          <div className="text-center">
+      <div className="bg-white rounded-3xl p-6 shadow-sm">
+        <h2 className="text-sm text-slate-600 mb-1">سلام</h2>
+        <h3 className="text-2xl font-bold text-slate-900 mb-4">{user.name}</h3>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-emerald-50 rounded-2xl p-4 text-center">
             <div className="text-2xl font-bold text-emerald-600 mb-1">۰</div>
-            <p className="text-xs text-slate-600">تراکنش امروز</p>
+            <div className="text-xs text-slate-600">امروز</div>
           </div>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-          <div className="text-center">
+          <div className="bg-blue-50 rounded-2xl p-4 text-center">
             <div className="text-2xl font-bold text-blue-600 mb-1">۰</div>
-            <p className="text-xs text-slate-600">مشتریان فعال</p>
+            <div className="text-xs text-slate-600">این هفته</div>
+          </div>
+          <div className="bg-purple-50 rounded-2xl p-4 text-center">
+            <div className="text-2xl font-bold text-purple-600 mb-1">۰</div>
+            <div className="text-xs text-slate-600">این ماه</div>
           </div>
         </div>
       </div>
@@ -339,404 +237,140 @@ function HomeTab({ user }: { user: BusinessUser }) {
 function CustomersTab() {
   return (
     <div className="p-4">
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <h2 className="text-lg font-bold text-slate-800 mb-4">لیست مشتریان</h2>
-        <div className="text-slate-500 text-center py-8">
-          مشتری‌ای وجود ندارد
+      <div className="bg-white rounded-3xl p-6 shadow-sm">
+        <h2 className="text-lg font-bold text-slate-900 mb-4">مشتریان</h2>
+        <div className="text-center py-12 text-slate-400">
+          <svg className="w-16 h-16 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <p className="text-sm">مشتری‌ای وجود ندارد</p>
         </div>
       </div>
     </div>
   );
 }
 
-function ScanTab({ 
-  scanMethod,
-  setScanMethod,
-  scanning,
-  cameraMode,
-  scannedData, 
+function ScanTab({
+  scannedData,
   setScannedData,
-  searchQuery,
-  setSearchQuery,
-  phoneNumber,
-  setPhoneNumber,
-  cardNumber,
-  setCardNumber,
-  customerId,
-  setCustomerId,
+  phoneSearch,
+  setPhoneSearch,
   fileInputRef,
-  videoRef,
   handleFileUpload,
-  handleStartCamera,
-  handleStopCamera,
-  handleVerifyCustomer 
-}: { 
-  scanMethod: ScanMethod;
-  setScanMethod: (method: ScanMethod) => void;
-  scanning: boolean;
-  cameraMode: boolean;
+  handlePhoneSearch,
+  handleVerify
+}: {
   scannedData: CustomerData | null;
   setScannedData: (data: CustomerData | null) => void;
-  searchQuery: string;
-  setSearchQuery: (q: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (p: string) => void;
-  cardNumber: string;
-  setCardNumber: (c: string) => void;
-  customerId: string;
-  setCustomerId: (id: string) => void;
+  phoneSearch: string;
+  setPhoneSearch: (phone: string) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleStartCamera: () => void;
-  handleStopCamera: () => void;
-  handleVerifyCustomer: () => void;
+  handlePhoneSearch: () => void;
+  handleVerify: () => void;
 }) {
-  return (
-    <div className="p-4 space-y-4">
-      {/* Method Selection Menu - Improved UI */}
-      {scanMethod === "menu" && !scannedData && (
-        <div className="space-y-4">
-          <div className="text-center mb-6">
-            <div className="bg-gradient-to-br from-emerald-100 to-teal-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-3">
-              <svg className="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold text-slate-800">شناسایی مشتری</h2>
-            <p className="text-sm text-slate-600 mt-1">روش مورد نظر را انتخاب کنید</p>
-          </div>
-          
-          {/* Quick Actions Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => {
-                setScanMethod("qr-scan");
-                handleStartCamera();
-              }}
-              className="bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col items-center gap-3"
-            >
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-base">دوربین</p>
-                <p className="text-xs opacity-90 mt-0.5">اسکن QR</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => {
-                setScanMethod("qr-upload");
-                fileInputRef.current?.click();
-              }}
-              className="bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col items-center gap-3"
-            >
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-base">گالری</p>
-                <p className="text-xs opacity-90 mt-0.5">آپلود QR</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setScanMethod("phone")}
-              className="bg-white hover:bg-slate-50 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col items-center gap-3 border-2 border-slate-200"
-            >
-              <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-base text-slate-800">موبایل</p>
-                <p className="text-xs text-slate-500 mt-0.5">شماره تلفن</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setScanMethod("search")}
-              className="bg-white hover:bg-slate-50 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col items-center gap-3 border-2 border-slate-200"
-            >
-              <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-base text-slate-800">جستجو</p>
-                <p className="text-xs text-slate-500 mt-0.5">نام/شماره</p>
-              </div>
-            </button>
-          </div>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
-            <p className="text-xs text-blue-800 text-center">
-              💡 سریع‌ترین روش: اسکن QR Code مشتری
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Search Method */}
-      {scanMethod === "search" && !scannedData && (
-        <div className="space-y-4">
-          <button 
-            onClick={() => setScanMethod("menu")} 
-            className="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            بازگشت
-          </button>
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-slate-800">جستجوی مشتری</h3>
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="نام یا شماره مشتری..."
-              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:outline-none text-lg"
-              autoFocus
-            />
-            <button className="w-full mt-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 rounded-xl shadow-lg">
-              جستجو
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Phone Method */}
-      {scanMethod === "phone" && !scannedData && (
-        <div className="space-y-4">
-          <button 
-            onClick={() => setScanMethod("menu")} 
-            className="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            بازگشت
-          </button>
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-slate-800">شماره موبایل</h3>
-            </div>
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="09123456789"
-              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-orange-500 focus:outline-none text-left text-lg tracking-wider"
-              dir="ltr"
-              autoFocus
-            />
-            <button className="w-full mt-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-bold py-4 rounded-xl shadow-lg">
-              جستجو
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* QR Scan with Camera */}
-      {scanMethod === "qr-scan" && scanning && cameraMode && !scannedData && (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-          <button onClick={() => {
-            handleStopCamera();
-            setScanMethod("menu");
-          }} className="text-slate-600 mb-4">
-            ← بازگشت
-          </button>
-          <div className="mb-4 text-center">
-            <h3 className="text-lg font-bold text-slate-800 mb-2">در حال اسکن...</h3>
-            <p className="text-sm text-slate-600">QR را در کادر قرار دهید</p>
-          </div>
-          
-          <div className="relative rounded-xl overflow-hidden bg-black mb-4">
-            <video
-              ref={videoRef}
-              className="w-full h-auto max-h-[400px]"
-              playsInline
-              autoPlay
-              muted
-              style={{ objectFit: 'cover' }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-64 h-64 border-4 border-emerald-500 rounded-2xl"></div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              handleStopCamera();
-              setScanMethod("menu");
-            }}
-            className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 px-6 rounded-xl border border-red-200 transition-colors"
-          >
-            لغو اسکن
-          </button>
-        </div>
-      )}
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onChange={(e) => {
-          handleFileUpload(e);
-          setScanMethod("menu");
-        }}
-        className="hidden"
-      />
-      {/* Camera Scanner */}
-      {scanning && cameraMode && !scannedData && (
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-          <div className="mb-4 text-center">
-            <h3 className="text-lg font-bold text-slate-800 mb-2">در حال اسکن...</h3>
-            <p className="text-sm text-slate-600">QR را در کادر قرار دهید</p>
-          </div>
-          
-          <div className="relative rounded-xl overflow-hidden bg-black mb-4">
-            <video
-              ref={videoRef}
-              className="w-full h-auto max-h-[400px]"
-              playsInline
-              autoPlay
-              muted
-              style={{ objectFit: 'cover' }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-64 h-64 border-4 border-emerald-500 rounded-2xl"></div>
-            </div>
-          </div>
-
-          <button
-            onClick={handleStopCamera}
-            className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 px-6 rounded-xl border border-red-200 transition-colors"
-          >
-            لغو اسکن
-          </button>
-        </div>
-      )}
-
-      {/* File Upload / Initial State */}
-      {!scanning && !scannedData && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center space-y-4">
-          <div className="bg-emerald-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto">
-            <svg className="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-slate-800 mb-2">ثبت امتیاز مشتری</h3>
-            <p className="text-slate-600 text-sm">
-              QR code مشتری را اسکن کنید
-            </p>
-          </div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-          <div className="space-y-3">
-            <button
-              onClick={handleStartCamera}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              دوربین مستقیم
-            </button>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full bg-white hover:bg-slate-50 text-slate-700 font-medium py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 border-2 border-slate-200"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              انتخاب از گالری
-            </button>
-          </div>
-        </div>
-      )}
-
-      {scannedData && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center">
+  if (scannedData) {
+    return (
+      <div className="p-4 space-y-4">
+        <div className="bg-white rounded-3xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
               <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-800">QR اسکن شد!</h3>
-              <p className="text-sm text-slate-600">اطلاعات مشتری</p>
+              <h3 className="text-xl font-bold text-slate-900">{scannedData.name}</h3>
+              <p className="text-sm text-slate-500" dir="ltr">{scannedData.phone}</p>
             </div>
           </div>
 
-          <div className="bg-slate-50 rounded-xl p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600">نام:</span>
-              <span className="font-bold text-slate-800">{scannedData.name}</span>
+          <div className="bg-slate-50 rounded-2xl p-4 mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-slate-600">امتیاز فعلی:</span>
+              <span className="text-2xl font-bold text-emerald-600">۱,۵۰۰</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600">شماره:</span>
-              <span className="font-medium text-slate-800" dir="ltr">{scannedData.phone}</span>
+            <div className="flex justify-between items-center text-xs text-slate-500">
+              <span>آخرین خرید:</span>
+              <span>۳ روز پیش</span>
             </div>
           </div>
 
           <div className="flex gap-3">
             <button
-              onClick={handleVerifyCustomer}
-              className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg transition-all"
+              onClick={handleVerify}
+              className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all"
             >
-              ✓ تایید و ثبت
+              ✓ ثبت امتیاز
             </button>
             <button
               onClick={() => setScannedData(null)}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-6 rounded-xl transition-colors"
+              className="px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-2xl transition-colors"
             >
               لغو
             </button>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    );
+  }
 
-function SettingsTab() {
   return (
-    <div className="p-4">
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-        <h2 className="text-lg font-bold text-slate-800 mb-4">تنظیمات</h2>
-        <div className="text-slate-500 text-center py-8">
-          تنظیمات در اینجا نمایش داده می‌شود
+    <div className="p-4 space-y-4">
+      {/* Quick Phone Search */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm">
+        <h3 className="text-lg font-bold text-slate-900 mb-4">شماره موبایل</h3>
+        <div className="flex gap-2">
+          <input
+            type="tel"
+            value={phoneSearch}
+            onChange={(e) => setPhoneSearch(e.target.value)}
+            placeholder="09123456789"
+            className="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:outline-none text-left text-lg"
+            dir="ltr"
+          />
+          <button
+            onClick={handlePhoneSearch}
+            className="px-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl shadow-md active:scale-95 transition-all"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
         </div>
+        <p className="text-xs text-slate-500 mt-2 text-center">یا</p>
+      </div>
+
+      {/* QR Scan Button */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileUpload}
+        className="hidden"
+      />
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        className="w-full bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white p-8 rounded-3xl shadow-lg hover:shadow-xl active:scale-[0.98] transition-all"
+      >
+        <div className="flex items-center justify-center gap-4">
+          <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+            </svg>
+          </div>
+          <div className="text-right">
+            <p className="text-xl font-bold">اسکن QR Code</p>
+            <p className="text-sm opacity-90">سریع‌ترین روش</p>
+          </div>
+        </div>
+      </button>
+
+      <div className="bg-blue-50/50 rounded-2xl p-3 text-center">
+        <p className="text-xs text-blue-700">
+          💡 کاربر تستی: <span className="font-mono font-bold">09124580298</span>
+        </p>
       </div>
     </div>
   );
@@ -745,28 +379,23 @@ function SettingsTab() {
 function ProfileTab({ user, handleLogout }: { user: BusinessUser; handleLogout: () => void }) {
   return (
     <div className="p-4 space-y-4">
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+      <div className="bg-white rounded-3xl p-6 shadow-sm">
         <div className="flex items-center gap-4 mb-6">
-          <div className="bg-gradient-to-br from-emerald-600 to-teal-600 w-16 h-16 rounded-full flex items-center justify-center">
-            <span className="text-2xl text-white font-bold">{user.name?.charAt(0)}</span>
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center">
+            <span className="text-2xl font-bold text-white">{user.name?.charAt(0)}</span>
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-800">{user.name}</h2>
-            <p className="text-sm text-slate-600">{user.role}</p>
-            <p className="text-xs text-slate-500">{user.business.name}</p>
+            <h2 className="text-xl font-bold text-slate-900">{user.name}</h2>
+            <p className="text-sm text-slate-500">{user.business.name}</p>
           </div>
         </div>
+        <button
+          onClick={handleLogout}
+          className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 rounded-2xl transition-colors"
+        >
+          خروج از حساب
+        </button>
       </div>
-
-      <button
-        onClick={handleLogout}
-        className="w-full bg-red-50 rounded-xl p-4 border border-red-200 flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
-      >
-        <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-        <span className="font-medium text-red-600">خروج</span>
-      </button>
     </div>
   );
 }
