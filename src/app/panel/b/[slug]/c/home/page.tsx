@@ -48,11 +48,11 @@ export default function CustomerHome() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20 transition-colors">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10 transition-colors">
         <div className="max-w-lg mx-auto px-4 py-3">
-          <h1 className="text-right text-sm font-medium text-slate-700">
+          <h1 className="text-right text-sm font-medium text-slate-700 dark:text-slate-200">
             باشگاه مشتریان {business.name}
           </h1>
         </div>
@@ -67,7 +67,7 @@ export default function CustomerHome() {
       </div>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-lg transition-colors">
         <div className="flex justify-around items-center h-20 max-w-lg mx-auto px-2">
           <button
             onClick={() => setActiveTab("home")}
@@ -361,16 +361,16 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
   return (
     <div className="p-4 space-y-4">
       {/* User Info Card */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold text-slate-800">{user.name}</h2>
-          <p className="text-slate-500 text-sm" dir="ltr">{user.phone}</p>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white">{user.name}</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm" dir="ltr">{user.phone}</p>
         </div>
       </div>
 
       {/* Menu Items */}
       <div className="space-y-2">
-        <button className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+        <button className="w-full bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
           <div className="flex items-center gap-3">
             <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
