@@ -183,31 +183,32 @@ export default function CreditCard({
 
       {/* Card Info Bar Below */}
       <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
-        {/* Left - Flip Action */}
-        <button
-          onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors group"
-        >
-          <div className="w-10 h-10 bg-slate-100 group-hover:bg-blue-50 rounded-xl flex items-center justify-center transition-colors">
-            <img 
-              src="/flip.svg" 
-              alt="flip"
-              className="w-6 h-6"
-            />
-          </div>
-          <span className="text-sm font-medium">
-            {isFlipped ? 'نمایش جلو' : 'نمایش پشت'}
-          </span>
-        </button>
-
         {/* Right - Points Display */}
-        <div className="text-left">
+        <div className="text-right">
           <p className="text-xs text-slate-500 mb-0.5">موجودی امتیاز</p>
           <div className="flex items-baseline gap-1.5">
             <p className="text-2xl font-bold text-blue-600">{points.toLocaleString('fa-IR')}</p>
             <p className="text-xs text-slate-600">امتیاز</p>
           </div>
         </div>
+
+        {/* Left - Flip Action */}
+        <button
+          onClick={() => setIsFlipped(!isFlipped)}
+          className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors group"
+        >
+          <span className="text-sm font-medium">
+            چرخش کارت
+          </span>
+          <div className="w-10 h-10 bg-slate-100 group-hover:bg-slate-200 rounded-xl flex items-center justify-center transition-colors">
+            <img 
+              src="/flip.svg" 
+              alt="flip"
+              className="w-6 h-6 opacity-60 group-hover:opacity-80"
+              style={{ filter: 'grayscale(100%)' }}
+            />
+          </div>
+        </button>
       </div>
     </div>
   );
