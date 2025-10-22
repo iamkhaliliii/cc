@@ -22,7 +22,7 @@ export default function ResellerDashboard() {
   useEffect(() => {
     const userData = localStorage.getItem("resellerUser");
     if (!userData) {
-      router.push("/reseller/login");
+      router.push("/panel/r/login");
     } else {
       setUser(JSON.parse(userData));
     }

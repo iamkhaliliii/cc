@@ -9,12 +9,12 @@ interface Business {
   slug: string;
 }
 
-export default function BusinessCustomerLogin() {
+export default function BusinessStaffLogin() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
   const [business, setBusiness] = useState<Business | null>(null);
-  const [mobile, setMobile] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,18 +40,17 @@ export default function BusinessCustomerLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/customer/login", {
+      const response = await fetch("/api/auth/business/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mobile, password, businessSlug: slug }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem(`customerUser_${slug}`, JSON.stringify(data.user));
-        localStorage.setItem(`currentBusiness_${slug}`, JSON.stringify(business));
-        router.push(`/business/${slug}/customer/home`);
+        localStorage.setItem(`businessUser_${slug}`, JSON.stringify(data.user));
+        router.push(`/panel/b/${slug}/b/home`);
       } else {
         setError(data.error || "خطا در ورود");
       }
@@ -65,41 +64,40 @@ export default function BusinessCustomerLogin() {
   if (!business) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="flex justify-center mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-xl">
+              <div className="bg-gradient-to-br from-emerald-600 to-teal-600 p-3 rounded-xl">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-slate-800">ورود مشتری</h1>
-            <p className="text-slate-600 text-sm">به باشگاه {business.name} خوش آمدید</p>
+            <h1 className="text-2xl font-bold text-slate-800">ورود کارمند</h1>
+            <p className="text-slate-600 text-sm">{business.name}</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700 block">
-                شماره موبایل
+                نام کاربری
               </label>
               <input
-                type="tel"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                placeholder="09124580298"
-                className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none transition-colors text-left"
-                dir="ltr"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="business1"
+                className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-emerald-500 focus:outline-none transition-colors"
                 required
               />
             </div>
@@ -113,8 +111,7 @@ export default function BusinessCustomerLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••"
-                className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-blue-500 focus:outline-none transition-colors text-left"
-                dir="ltr"
+                className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-emerald-500 focus:outline-none transition-colors"
                 required
               />
             </div>
@@ -128,7 +125,7 @@ export default function BusinessCustomerLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "در حال ورود..." : "ورود"}
             </button>

@@ -20,7 +20,7 @@ export default function SuperAdminDashboard() {
   useEffect(() => {
     const userData = localStorage.getItem("superadminUser");
     if (!userData) {
-      router.push("/superadmin/login");
+      router.push("/panel/a/login");
     } else {
       setUser(JSON.parse(userData));
     }

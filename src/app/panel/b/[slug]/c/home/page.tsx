@@ -35,7 +35,7 @@ export default function CustomerHome() {
     const businessData = localStorage.getItem(`currentBusiness_${slug}`);
     
     if (!userData || !businessData) {
-      router.push(`/business/${slug}/customer/login`);
+      router.push(`/panel/b/${slug}/c/login`);
     } else {
       setUser(JSON.parse(userData));
       setBusiness(JSON.parse(businessData));
@@ -306,7 +306,7 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
   const handleLogout = () => {
     localStorage.removeItem(`customerUser_${slug}`);
     localStorage.removeItem(`currentBusiness_${slug}`);
-    router.push(`/business/${slug}`);
+    router.push(`/panel/b/${slug}`);
   };
 
   return (

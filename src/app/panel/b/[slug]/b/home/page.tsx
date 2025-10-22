@@ -39,7 +39,7 @@ export default function BusinessStaffHome() {
   useEffect(() => {
     const userData = localStorage.getItem(`businessUser_${slug}`);
     if (!userData) {
-      router.push(`/business/${slug}/business/login`);
+      router.push(`/panel/b/${slug}/b/login`);
     } else {
       setUser(JSON.parse(userData));
     }
@@ -90,7 +90,7 @@ export default function BusinessStaffHome() {
 
   const handleLogout = () => {
     localStorage.removeItem(`businessUser_${slug}`);
-    router.push(`/business/${slug}`);
+    router.push(`/panel/b/${slug}`);
   };
 
   if (!user) {
