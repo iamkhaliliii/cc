@@ -201,6 +201,14 @@ export default function BusinessStaffHome() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={handleOpenMenu}
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <div className="flex items-center gap-2">
               <div className="bg-gradient-to-br from-emerald-600 to-teal-600 w-8 h-8 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,14 +219,6 @@ export default function BusinessStaffHome() {
                 {user.business.name}
               </h1>
             </div>
-            <button
-              onClick={handleOpenMenu}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
           </div>
         </div>
       </header>
