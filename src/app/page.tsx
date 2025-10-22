@@ -13,7 +13,7 @@ export default function Home() {
         <img 
           src="/bg.png" 
           alt="background"
-          className="h-[120vh] w-auto"
+          className="w-[150vw] h-auto"
         />
       </div>
 
