@@ -59,7 +59,7 @@ export default function CreditCard({
                 <img 
                   src="/Smart-Chip-CPU-by-Merlin2525.svg" 
                   alt="chip"
-                  className="w-12 h-14 opacity-95 drop-shadow-lg rotate-90"
+                  className="w-8 h-10 opacity-90  rotate-90"
                 />
               </div>
 
@@ -95,30 +95,39 @@ export default function CreditCard({
 
         {/* Back of Card */}
         <div className="absolute w-full h-full backface-hidden rotate-y-180">
-          <div className="relative w-full h-full bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-            {/* Black Strip */}
-            <div className="absolute top-8 left-0 w-full h-14 bg-black"></div>
+          <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
+            {/* Background Image - Same as front */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${backgroundImage})` }}
+            >
+              {/* Dark overlay for back */}
+              <div className="absolute inset-0 bg-black/70"></div>
+            </div>
 
-            {/* CVV */}
-            <div className="absolute top-28 left-0 right-0 px-6">
-              <div className="bg-white rounded-lg h-10 p-3 flex items-center justify-end">
-                <p className="text-xs uppercase text-slate-400 absolute left-3 top-1">CVV</p>
-                <p className="text-black font-mono font-bold tracking-widest">***</p>
+            {/* Card Content */}
+            <div className="relative z-10 h-full">
+              {/* Black Magnetic Strip */}
+              <div className="absolute top-8 left-0 w-full h-14 bg-black"></div>
+
+              {/* CVV */}
+              <div className="absolute top-28 left-0 right-0 px-6">
+                <div className="bg-slate-100 rounded-lg h-10 p-3 flex items-center justify-end relative">
+                  <p className="text-xs uppercase text-slate-500 absolute left-3 top-1">CVV</p>
+                  <p className="text-black font-mono font-bold tracking-widest">***</p>
+                </div>
+              </div>
+
+              {/* Terms */}
+              <div className="absolute bottom-6 left-6 right-6 text-white text-[9px] leading-relaxed">
+                <p className="mb-2 opacity-90">
+                  این کارت متعلق به {businessName} می‌باشد. استفاده غیرمجاز از این کارت جرم است.
+                </p>
+                <p className="opacity-80">
+                  استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
+                </p>
               </div>
             </div>
-
-            {/* Terms */}
-            <div className="absolute bottom-6 left-6 right-6 text-white text-[8px] leading-relaxed opacity-80">
-              <p className="mb-2">
-                این کارت متعلق به {businessName} می‌باشد. استفاده غیرمجاز از این کارت جرم است.
-              </p>
-              <p>
-                استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
-              </p>
-            </div>
-
-            {/* Signature Strip Pattern */}
-            <div className="absolute top-44 left-6 right-6 h-8 bg-slate-100/90 rounded"></div>
           </div>
         </div>
       </div>
