@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import CreditCard from "@/components/CreditCard";
 
-type Tab = "home" | "points" | "qrcode" | "profile";
+type Tab = "card" | "points" | "qrcode" | "profile";
 
 interface User {
   id: number;
@@ -26,7 +26,7 @@ interface Business {
 export default function CustomerHome() {
   const params = useParams();
   const slug = params.slug as string;
-  const [activeTab, setActiveTab] = useState<Tab>("home");
+  const [activeTab, setActiveTab] = useState<Tab>("card");
   const [user, setUser] = useState<User | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
   const router = useRouter();
@@ -60,7 +60,7 @@ export default function CustomerHome() {
 
       {/* Content Area */}
       <div className="h-[calc(100vh-9rem)] overflow-y-auto">
-        {activeTab === "home" && <HomeTab user={user} business={business} />}
+        {activeTab === "card" && <CardTab user={user} business={business} />}
         {activeTab === "points" && <PointsTab user={user} business={business} />}
         {activeTab === "qrcode" && <QRCodeTab user={user} business={business} />}
         {activeTab === "profile" && <ProfileTab user={user} business={business} slug={slug} />}
@@ -70,17 +70,17 @@ export default function CustomerHome() {
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg">
         <div className="flex justify-around items-center h-20 max-w-lg mx-auto px-2">
           <button
-            onClick={() => setActiveTab("home")}
+            onClick={() => setActiveTab("card")}
             className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
-              activeTab === "home"
+              activeTab === "card"
                 ? "text-blue-600"
                 : "text-slate-400 hover:text-slate-600"
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
-            <span className="text-xs font-medium">خانه</span>
+            <span className="text-xs font-medium">کارت</span>
           </button>
 
           <button
@@ -130,7 +130,7 @@ export default function CustomerHome() {
   );
 }
 
-function HomeTab({ user, business }: { user: User; business: Business }) {
+function CardTab({ user, business }: { user: User; business: Business }) {
   return (
     <div className="p-4 space-y-5">
       {/* Premium Credit Card */}
@@ -145,8 +145,8 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
         backgroundImage="/Background.png"
       />
 
-      {/* Old card backup */}
-      <div className="relative group hidden">
+      {/* Quick Stats */}
+      <div className="grid grid-cols-3 gap-3">
         {/* Card Shadow Layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-[28px] blur-xl opacity-60 group-hover:opacity-80 transition-opacity"></div>
         
@@ -258,34 +258,6 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div>
-        <h3 className="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
-          <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-          دسترسی سریع
-        </h3>
-        <div className="grid grid-cols-2 gap-3">
-          <button className="group bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-2xl p-5 border border-blue-100 hover:border-blue-200 transition-all hover:shadow-lg">
-            <div className="bg-gradient-to-br from-blue-600 to-purple-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-slate-800">جوایز من</p>
-            <p className="text-xs text-slate-500 mt-1">۳ جایزه در دسترس</p>
-          </button>
-
-          <button className="group bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl p-5 border border-emerald-100 hover:border-emerald-200 transition-all hover:shadow-lg">
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-slate-800">تاریخچه</p>
-            <p className="text-xs text-slate-500 mt-1">۱۲ تراکنش</p>
-          </button>
-        </div>
-      </div>
 
       {/* Recent Activity */}
       <div>
