@@ -38,6 +38,12 @@ export default function CreditCard({
   // Generate QR code for back of card
   useEffect(() => {
     if (qrCanvasRef.current && isFlipped) {
+      // Clear first
+      const ctx = qrCanvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, qrCanvasRef.current.width, qrCanvasRef.current.height);
+      }
+
       const qrData = JSON.stringify({
         userId,
         phone,
@@ -59,6 +65,12 @@ export default function CreditCard({
           }
         }
       );
+    } else if (qrCanvasRef.current && !isFlipped) {
+      // Clear when flipped back to front
+      const ctx = qrCanvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, qrCanvasRef.current.width, qrCanvasRef.current.height);
+      }
     }
   }, [isFlipped, userId, phone, userName, businessId, businessSlug]);
 

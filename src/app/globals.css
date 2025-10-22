@@ -137,14 +137,22 @@
   transform: rotateY(180deg);
 }
 
-/* Prevent text showing through on mobile during flip */
-@media (max-width: 640px) {
-  .backface-hidden {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-  }
+/* Prevent elements showing through during flip */
+.backface-hidden {
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.transform-style-3d {
+  -webkit-transform-style: preserve-3d !important;
+  transform-style: preserve-3d !important;
+}
+
+.perspective-1000 {
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
 }
 
 /* Embossed text effect for card numbers */
