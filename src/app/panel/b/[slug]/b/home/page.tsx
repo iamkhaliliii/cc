@@ -246,7 +246,7 @@ function ScanTab({
 }: { 
   scannedData: CustomerData | null;
   setScannedData: (data: CustomerData | null) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleVerifyCustomer: () => void;
 }) {
