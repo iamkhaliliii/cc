@@ -49,8 +49,8 @@ export default function BusinessStaffLogin() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("businessUser", JSON.stringify(data.user));
-        router.push("/business/home");
+        localStorage.setItem(`businessUser_${slug}`, JSON.stringify(data.user));
+        router.push(`/business/${slug}/business/home`);
       } else {
         setError(data.error || "خطا در ورود");
       }
