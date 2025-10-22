@@ -175,117 +175,11 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
               </div>
             </div>
 
-            {/* Chip Simulation */}
-            <div className="w-12 h-9 bg-gradient-to-br from-amber-200 to-amber-400 rounded-md opacity-90 my-2">
-              <div className="w-full h-full grid grid-cols-3 gap-[1px] p-1">
-                {[...Array(9)].map((_, i) => (
-                  <div key={i} className="bg-amber-500/40 rounded-[1px]"></div>
-                ))}
-              </div>
-            </div>
-
-            {/* Middle Section - Points */}
-            <div className="mt-auto mb-4">
-              <p className="text-xs opacity-80 mb-1.5 tracking-wide">موجودی امتیاز</p>
-              <div className="flex items-baseline gap-2">
-                <p className="text-5xl font-black tracking-tight tabular-nums">{user.points?.toLocaleString('fa-IR')}</p>
-                <p className="text-base opacity-90 font-medium">امتیاز</p>
-              </div>
-              <div className="mt-2 text-xs opacity-70">
-                معادل {(user.points * 1000).toLocaleString('fa-IR')} تومان تخفیف
-              </div>
-            </div>
-
-            {/* Bottom Section */}
-            <div className="flex items-end justify-between pt-3 border-t border-white/20">
-              <div>
-                <p className="text-[10px] opacity-70 mb-1 tracking-wide">نام دارنده</p>
-                <p className="text-sm font-bold tracking-wide">{user.name}</p>
-              </div>
-              <div className="text-left">
-                <p className="text-[10px] opacity-70 mb-1 tracking-wide">شماره کارت</p>
-                <p className="text-xs font-mono font-bold tracking-widest" dir="ltr">
-                  {user.id.toString().padStart(6, '0')}
-                </p>
-              </div>
-            </div>
           </div>
 
-          {/* Holographic Shine */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          
-          {/* Glass Effect Border */}
-          <div className="absolute inset-0 rounded-[24px] border border-white/30"></div>
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all hover:scale-105">
-          <div className="text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-            <p className="text-2xl font-bold text-emerald-600">+۵۰</p>
-            <p className="text-[10px] text-slate-500 mt-1">این ماه</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all hover:scale-105">
-          <div className="text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-              </svg>
-            </div>
-            <p className="text-2xl font-bold text-orange-600">۳</p>
-            <p className="text-[10px] text-slate-500 mt-1">جوایز</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all hover:scale-105">
-          <div className="text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-            </div>
-            <p className="text-2xl font-bold text-blue-600">۱۲</p>
-            <p className="text-[10px] text-slate-500 mt-1">خرید</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h3 className="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
-          <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-          دسترسی سریع
-        </h3>
-        <div className="grid grid-cols-2 gap-3">
-          <button className="group bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-2xl p-5 border border-blue-100 hover:border-blue-200 transition-all hover:shadow-lg">
-            <div className="bg-gradient-to-br from-blue-600 to-purple-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-slate-800">جوایز من</p>
-            <p className="text-xs text-slate-500 mt-1">۳ جایزه در دسترس</p>
-          </button>
-
-          <button className="group bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl p-5 border border-emerald-100 hover:border-emerald-200 transition-all hover:shadow-lg">
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-slate-800">تاریخچه</p>
-            <p className="text-xs text-slate-500 mt-1">۱۲ تراکنش</p>
-          </button>
-        </div>
-      </div>
 
       {/* Recent Activity */}
       <div>
@@ -332,7 +226,6 @@ function PointsTab({ user, business }: { user: User; business: Business }) {
 
 function QRCodeTab({ user, business }: { user: User; business: Business }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [brightness, setBrightness] = useState(1);
   const [showDownloadHint, setShowDownloadHint] = useState(false);
 
   useEffect(() => {
@@ -346,34 +239,21 @@ function QRCodeTab({ user, business }: { user: User; business: Business }) {
         type: "customer"
       });
 
-      console.log('Generating QR code with data:', qrData);
-
       QRCode.toCanvas(
         canvasRef.current,
         qrData,
         {
-          width: 280,
+          width: 240,
           margin: 2,
           color: {
-            dark: "#1e40af",
+            dark: "#000000",
             light: "#ffffff"
           },
           errorCorrectionLevel: 'H'
-        },
-        (error) => {
-          if (error) {
-            console.error("QR Code generation error:", error);
-          } else {
-            console.log("QR Code generated successfully");
-          }
         }
       );
     }
   }, [user, business]);
-
-  const handleBrightnessToggle = () => {
-    setBrightness(brightness === 1 ? 1.5 : 1);
-  };
 
   const handleDownloadQR = () => {
     if (canvasRef.current) {
@@ -393,41 +273,52 @@ function QRCodeTab({ user, business }: { user: User; business: Business }) {
   };
 
   return (
-    <div className="p-4 space-y-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
-      <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 max-w-sm w-full">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">کد من</h2>
-          <p className="text-slate-600 text-sm">{business.name}</p>
-        </div>
-
+    <div className="p-4 flex items-center justify-center min-h-[calc(100vh-8rem)]">
+      {/* Card-like vertical layout */}
+      <div className="relative w-full max-w-md">
+        {/* Card Shadow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-[28px] blur-xl opacity-40"></div>
+        
         <div 
-          className="bg-white p-6 rounded-2xl border-4 border-blue-100 mb-6 flex items-center justify-center"
-          style={{ filter: `brightness(${brightness})` }}
+          className="relative bg-cover bg-center rounded-3xl overflow-hidden shadow-2xl"
+          style={{ backgroundImage: 'url(/Background.png)' }}
         >
-          <canvas ref={canvasRef} className="max-w-full h-auto" />
-        </div>
+          {/* Content */}
+          <div className="relative z-10 p-8 flex flex-col items-center text-white">
+            {/* Top Info */}
+            <div className="text-center mb-6">
+              <p className="text-xs uppercase tracking-wide opacity-80 mb-1">کد شناسایی</p>
+              <h2 className="text-xl font-bold">{business.name}</h2>
+            </div>
 
-        <div className="space-y-3">
-          <button
-            onClick={handleBrightnessToggle}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2"
-          >
-            <span>{brightness === 1 ? "افزایش روشنایی" : "کاهش روشنایی"}</span>
-          </button>
+            {/* QR Code - Center */}
+            <div className="bg-white p-4 rounded-2xl shadow-2xl mb-6">
+              <canvas ref={canvasRef} className="block" />
+            </div>
 
-          <button
-            onClick={handleDownloadQR}
-            className="w-full bg-white border-2 border-blue-200 text-blue-600 font-medium py-2.5 px-4 rounded-lg hover:bg-blue-50 transition-colors"
-          >
-            ذخیره QR Code
-          </button>
-        </div>
+            {/* User Info */}
+            <div className="text-center mb-6">
+              <p className="text-sm font-bold mb-1">{user.name}</p>
+              <p className="text-xs opacity-80" dir="ltr">{user.phone}</p>
+            </div>
 
-        {showDownloadHint && (
-          <div className="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm text-center">
-            ✓ QR code ذخیره شد!
+            {/* Actions */}
+            <div className="w-full space-y-2">
+              <button
+                onClick={handleDownloadQR}
+                className="w-full bg-white/20 backdrop-blur-md hover:bg-white/30 text-white font-medium py-3 rounded-xl transition-all border border-white/30"
+              >
+                ذخیره QR Code
+              </button>
+            </div>
+
+            {showDownloadHint && (
+              <div className="mt-3 bg-green-500/90 text-white px-4 py-2 rounded-lg text-sm">
+                ✓ ذخیره شد!
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
