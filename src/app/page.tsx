@@ -43,24 +43,42 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Desktop Layout */}
+      {/* Desktop Layout - Same as mobile but in bordered container */}
       <div className="hidden md:flex md:items-center md:justify-center md:min-h-screen md:p-8">
-        <div className="relative max-w-5xl w-full bg-white/5 backdrop-blur-lg rounded-[3rem] border border-white/20 overflow-hidden shadow-2xl p-20">
-          {/* Logo */}
-          <div className="text-center mb-12">
-            <img src="/lincard.svg" alt="Linkard" className="h-20 mx-auto" />
+        {/* Background for whole page in desktop */}
+        <div className="fixed inset-0 bg-gradient-to-br from-purple-900 to-indigo-900 -z-10"></div>
+        
+        <div className="relative w-full max-w-lg bg-white/10 backdrop-blur-sm rounded-[3rem] border border-white/20 overflow-hidden shadow-2xl">
+          {/* Background inside container */}
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2">
+            <img 
+              src="/bg.png" 
+              alt="background"
+              className="w-[150vw] md:w-[800px] h-auto opacity-80"
+            />
           </div>
 
-          {/* Text */}
-          <div className="text-center text-white space-y-4 mb-12">
-            <p className="text-2xl opacity-90">به سامانه باشگاه مشتریان خوش آمدید</p>
-          </div>
+          {/* Content - Same as mobile */}
+          <div className="relative z-10 min-h-[600px] flex flex-col justify-end p-12">
+            {/* Logo - Bottom left aligned */}
+            <div className="mb-8">
+              <img src="/lincard.svg" alt="Linkard" className="h-14" />
+            </div>
 
-          {/* CTA */}
-          <div className="flex justify-center">
+            {/* Text - Left aligned */}
+            <div className="mb-8 text-right">
+              <p className="text-white text-base leading-relaxed opacity-90">
+                سیستم جامع مدیریت باشگاه مشتریان
+                <br />
+                برای کسب‌وکارها و مشتریان
+              </p>
+            </div>
+
+            {/* CTA Button */}
             <button
               onClick={() => setShowMenu(true)}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-6 px-20 rounded-full text-xl shadow-2xl hover:scale-105 transition-all"
+              className="w-full py-3 px-6 rounded-full font-medium text-sm shadow-lg hover:scale-105 transition-all"
+              style={{ backgroundColor: '#0047FF', color: 'white' }}
             >
               ورود
             </button>
