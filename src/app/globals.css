@@ -155,14 +155,18 @@
 /* Responsive card sizing */
 @media (max-width: 640px) {
   .emboss-text {
+    font-size: 1.25rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .emboss-text {
     font-size: 1.1rem !important;
-    letter-spacing: 0.15em !important;
   }
 }
 
 @media (max-width: 380px) {
   .emboss-text {
-    font-size: 1rem !important;
-    letter-spacing: 0.1em !important;
+    font-size: 0.95rem !important;
   }
 }

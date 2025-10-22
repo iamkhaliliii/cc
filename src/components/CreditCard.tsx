@@ -65,10 +65,16 @@ export default function CreditCard({
 
 
               {/* Card Number with Emboss Effect */}
-              <div className="my-1">
-                <p className="text-xl sm:text-2xl md:text-[1.7rem] font-mono tracking-wider emboss-text select-none whitespace-nowrap" dir="ltr">
-                  {formattedCardNumber}
-                </p>
+              <div className="my-1 flex items-center justify-between w-full">
+                {cardNumber.match(/.{1,4}/g)?.map((group, index) => (
+                  <span 
+                    key={index}
+                    className="text-2xl sm:text-3xl md:text-4xl font-mono emboss-text select-none"
+                    dir="ltr"
+                  >
+                    {group}
+                  </span>
+                ))}
               </div>
 
               {/* Bottom Info */}
