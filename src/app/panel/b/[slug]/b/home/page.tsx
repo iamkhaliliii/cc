@@ -35,7 +35,11 @@ export default function BusinessStaffHome() {
   const [user, setUser] = useState<BusinessUser | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [scannedData, setScannedData] = useState<CustomerData | null>(null);
+  const [scanning, setScanning] = useState(false);
+  const [cameraMode, setCameraMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -46,6 +50,67 @@ export default function BusinessStaffHome() {
       setUser(JSON.parse(userData));
     }
   }, [router, slug]);
+
+  useEffect(() => {
+    let isActive = true;
+    let controls: { stop: () => void } | null = null;
+
+    const startScanning = async () => {
+      if (scanning && videoRef.current && cameraMode) {
+        try {
+          if (!codeReaderRef.current) {
+            codeReaderRef.current = new BrowserQRCodeReader();
+          }
+
+          controls = await codeReaderRef.current.decodeFromVideoDevice(
+            undefined,
+            videoRef.current,
+            (result) => {
+              if (result && isActive) {
+                try {
+                  const data = JSON.parse(result.getText());
+                  if (data.type === "customer" && data.businessSlug === slug) {
+                    setScannedData(data);
+                    setScanning(false);
+                    setCameraMode(false);
+                  } else if (data.businessSlug !== slug) {
+                    alert(`این QR مربوط به کسب‌وکار دیگری است!`);
+                  }
+                } catch (err) {
+                  console.error("Invalid QR:", err);
+                }
+              }
+            }
+          );
+        } catch (error) {
+          console.error("Scanner error:", error);
+          setScanning(false);
+          setCameraMode(false);
+        }
+      }
+    };
+
+    if (scanning && cameraMode) {
+      startScanning();
+    }
+
+    return () => {
+      isActive = false;
+      if (controls) {
+        try {
+          controls.stop();
+        } catch (e) {
+          console.log("Error stopping:", e);
+        }
+      }
+      const video = videoRef.current;
+      if (video && video.srcObject) {
+        const stream = video.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+    };
+  }, [scanning, cameraMode, slug]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,6 +148,24 @@ export default function BusinessStaffHome() {
     }
   };
 
+  const handleStartCamera = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: { ideal: 'environment' } } 
+      });
+      setCameraMode(true);
+      setScanning(true);
+    } catch (error) {
+      console.error("Camera error:", error);
+      alert("دسترسی به دوربین رد شد");
+    }
+  };
+
+  const handleStopCamera = () => {
+    setScanning(false);
+    setCameraMode(false);
+  };
+
   const handleVerifyCustomer = async () => {
     if (!scannedData) return;
     alert(`✅ کاربر ${scannedData.name} تایید شد!\nشماره: ${scannedData.phone}`);
@@ -113,7 +196,20 @@ export default function BusinessStaffHome() {
       <div className="h-[calc(100vh-9rem)] overflow-y-auto">
         {activeTab === "home" && <HomeTab user={user} />}
         {activeTab === "customers" && <CustomersTab />}
-        {activeTab === "scan" && <ScanTab scannedData={scannedData} setScannedData={setScannedData} fileInputRef={fileInputRef} handleFileUpload={handleFileUpload} handleVerifyCustomer={handleVerifyCustomer} />}
+        {activeTab === "scan" && (
+          <ScanTab 
+            scanning={scanning}
+            cameraMode={cameraMode}
+            scannedData={scannedData}
+            setScannedData={setScannedData}
+            fileInputRef={fileInputRef}
+            videoRef={videoRef}
+            handleFileUpload={handleFileUpload}
+            handleStartCamera={handleStartCamera}
+            handleStopCamera={handleStopCamera}
+            handleVerifyCustomer={handleVerifyCustomer}
+          />
+        )}
         {activeTab === "settings" && <SettingsTab />}
         {activeTab === "profile" && <ProfileTab user={user} handleLogout={handleLogout} />}
       </div>
@@ -238,21 +334,63 @@ function CustomersTab() {
 }
 
 function ScanTab({ 
+  scanning,
+  cameraMode,
   scannedData, 
   setScannedData, 
-  fileInputRef, 
+  fileInputRef,
+  videoRef,
   handleFileUpload,
+  handleStartCamera,
+  handleStopCamera,
   handleVerifyCustomer 
 }: { 
+  scanning: boolean;
+  cameraMode: boolean;
   scannedData: CustomerData | null;
   setScannedData: (data: CustomerData | null) => void;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleStartCamera: () => void;
+  handleStopCamera: () => void;
   handleVerifyCustomer: () => void;
 }) {
   return (
     <div className="p-4 space-y-4">
-      {!scannedData && (
+      {/* Camera Scanner */}
+      {scanning && cameraMode && !scannedData && (
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
+          <div className="mb-4 text-center">
+            <h3 className="text-lg font-bold text-slate-800 mb-2">در حال اسکن...</h3>
+            <p className="text-sm text-slate-600">QR را در کادر قرار دهید</p>
+          </div>
+          
+          <div className="relative rounded-xl overflow-hidden bg-black mb-4">
+            <video
+              ref={videoRef}
+              className="w-full h-auto max-h-[400px]"
+              playsInline
+              autoPlay
+              muted
+              style={{ objectFit: 'cover' }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-64 h-64 border-4 border-emerald-500 rounded-2xl"></div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleStopCamera}
+            className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-3 px-6 rounded-xl border border-red-200 transition-colors"
+          >
+            لغو اسکن
+          </button>
+        </div>
+      )}
+
+      {/* File Upload / Initial State */}
+      {!scanning && !scannedData && (
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center space-y-4">
           <div className="bg-emerald-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto">
             <svg className="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,15 +411,26 @@ function ScanTab({
             onChange={handleFileUpload}
             className="hidden"
           />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            </svg>
-            اسکن QR Code
-          </button>
+          <div className="space-y-3">
+            <button
+              onClick={handleStartCamera}
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-medium py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              دوربین مستقیم
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full bg-white hover:bg-slate-50 text-slate-700 font-medium py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 border-2 border-slate-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              انتخاب از گالری
+            </button>
+          </div>
         </div>
       )}
 
