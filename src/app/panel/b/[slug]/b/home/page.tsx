@@ -38,7 +38,7 @@ export default function BusinessStaffHome() {
   const [scanning, setScanning] = useState(false);
   const [cameraMode, setCameraMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
@@ -174,11 +174,15 @@ export default function BusinessStaffHome() {
     setScannedData(null);
   };
 
+  const handleOpenMenu = () => {
+    setMenuOpen(true);
+    setTimeout(() => setIsAnimating(true), 10);
+  };
+
   const handleCloseMenu = () => {
-    setIsClosing(true);
+    setIsAnimating(false);
     setTimeout(() => {
       setMenuOpen(false);
-      setIsClosing(false);
     }, 300);
   };
 
@@ -197,7 +201,7 @@ export default function BusinessStaffHome() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={handleOpenMenu}
             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,14 +220,14 @@ export default function BusinessStaffHome() {
           {/* Backdrop */}
           <div 
             className={`fixed inset-0 bg-black/40 transition-opacity duration-300 ${
-              isClosing ? 'opacity-0' : 'opacity-100'
+              isAnimating ? 'opacity-100' : 'opacity-0'
             }`}
             onClick={handleCloseMenu}
           />
           
           {/* Sidebar */}
           <div className={`fixed top-0 right-0 bottom-0 w-80 bg-white shadow-2xl z-40 transition-transform duration-300 ease-out ${
-            isClosing ? 'translate-x-full' : 'translate-x-0'
+            isAnimating ? 'translate-x-0' : 'translate-x-full'
           }`}>
             {/* Sidebar Header */}
             <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white">
