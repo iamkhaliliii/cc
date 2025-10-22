@@ -137,6 +137,16 @@
   transform: rotateY(180deg);
 }
 
+/* Prevent text showing through on mobile during flip */
+@media (max-width: 640px) {
+  .backface-hidden {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+  }
+}
+
 /* Embossed text effect for card numbers */
 .emboss-text {
   font-family: 'Share Tech Mono', 'Courier New', monospace;

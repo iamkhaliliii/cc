@@ -284,7 +284,7 @@ function QRCodeTab({ user, business }: { user: User; business: Business }) {
           style={{ backgroundImage: 'url(/Background.png)' }}
         >
           {/* Dark overlay with blur */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 bg-black/10 backdrop-blur-xs"></div>
 
           {/* Content */}
           <div className="relative z-10 p-8 flex flex-col items-center text-white">
