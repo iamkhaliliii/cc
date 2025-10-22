@@ -21,9 +21,12 @@ export default function CreditCard({
 }: CreditCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // Generate 16-digit card number from phone (11 digits) + userId (padded to 5 digits)
-  const cardNumber = phone.substring(1) + userId.toString().padStart(5, '0'); // 10 + 5 = 15, add one more
-  const formattedCardNumber = cardNumber.padEnd(16, '0').match(/.{1,4}/g)?.join(' ') || '';
+  // Generate exactly 16-digit card number
+  // phone without 0: 10 digits + userId padded to 6 digits = 16 digits
+  const phoneDigits = phone.substring(1); // Remove leading 0
+  const userIdPadded = userId.toString().padStart(6, '0');
+  const cardNumber = phoneDigits + userIdPadded; // Exactly 16 digits
+  const formattedCardNumber = cardNumber.match(/.{1,4}/g)?.join(' ') || '';
 
   return (
     <div 
@@ -50,16 +53,7 @@ export default function CreditCard({
                   <p className="text-xs uppercase tracking-wide opacity-90">باشگاه</p>
                   <p className="text-lg font-bold mt-1">{businessName}</p>
                 </div>
-                <svg width="40" height="40" viewBox="0 0 17.5 16.2" className="opacity-90">
-                  <path 
-                    d="M3.2 0l5.4 5.6L14.3 0l3.2 3v9L13 16.2V7.8l-4.4 4.1L4.5 8v8.2L0 12V3l3.2-3z" 
-                    fill="white"
-                  />
-                </svg>
-              </div>
-
-              {/* Chip */}
-              <div className="w-14 h-11 bg-gradient-to-br from-amber-200 via-amber-300 to-amber-400 rounded-lg relative overflow-hidden shadow-md">
+                <div className="w-10 h-8 bg-gradient-to-br from-amber-200 via-amber-300 to-amber-400 rounded-lg relative overflow-hidden shadow-md">
                 <div className="absolute inset-0 grid grid-cols-3 gap-[1px] p-1.5">
                   {[...Array(9)].map((_, i) => (
                     <div key={i} className="bg-amber-600/30 rounded-[1px]"></div>
@@ -67,22 +61,12 @@ export default function CreditCard({
                 </div>
                 <div className="absolute inset-3 border border-amber-700/40 rounded-md"></div>
               </div>
+              </div>
 
-              {/* Contactless Wave */}
-              <svg 
-                viewBox="0 3.71 26.959 38.787" 
-                width="27" 
-                height="39" 
-                fill="white" 
-                className="opacity-40 absolute left-24 top-28"
-              >
-                <path d="M19.709 3.719c.266.043.5.187.656.406 4.125 5.207 6.594 11.781 6.594 18.938 0 7.156-2.469 13.73-6.594 18.937-.195.336-.57.531-.957.492a.9946.9946 0 0 1-.851-.66c-.129-.367-.035-.777.246-1.051 3.855-4.867 6.156-11.023 6.156-17.718 0-6.696-2.301-12.852-6.156-17.719-.262-.317-.301-.762-.102-1.121.204-.36.602-.559 1.008-.504z"/>
-                <path d="M13.74 7.563c.231.039.442.164.594.343 3.508 4.059 5.625 9.371 5.625 15.157 0 5.785-2.113 11.097-5.625 15.156-.363.422-1 .472-1.422.109-.422-.363-.472-1-.109-1.422 3.211-3.711 5.156-8.551 5.156-13.843 0-5.293-1.949-10.133-5.156-13.844-.27-.309-.324-.75-.141-1.114.188-.367.578-.582.985-.542h.093z"/>
-              </svg>
 
               {/* Card Number with Emboss Effect */}
-              <div className="my-3">
-                <p className="text-2xl sm:text-3xl font-mono tracking-[0.3em] emboss-text select-none" dir="ltr">
+              <div className="my-1">
+                <p className="text-xl sm:text-2xl md:text-[1.7rem] font-mono tracking-wider emboss-text select-none whitespace-nowrap" dir="ltr">
                   {formattedCardNumber}
                 </p>
               </div>
@@ -99,16 +83,6 @@ export default function CreditCard({
                 </div>
               </div>
 
-              {/* Mastercard Logo */}
-              <div className="absolute left-6 bottom-6 flex">
-                <div className="w-8 h-8 rounded-full bg-red-600"></div>
-                <div className="w-8 h-8 rounded-full bg-amber-500 -ml-4 opacity-80"></div>
-              </div>
-
-              {/* Points Badge */}
-              <div className="absolute top-6 left-6 bg-gradient-to-br from-emerald-500 to-teal-600 px-4 py-2 rounded-full shadow-lg">
-                <p className="text-xs font-bold">{points.toLocaleString('fa-IR')} امتیاز</p>
-              </div>
             </div>
           </div>
         </div>
