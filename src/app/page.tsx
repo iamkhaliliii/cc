@@ -8,8 +8,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: '#2F01B0' }}>
-      {/* Background Image - Larger than screen, centered, overflows */}
-      <div className="fixed -top-20 left-1/2 -translate-x-1/2 pointer-events-none">
+      {/* Background Image - Mobile only */}
+      <div className="md:hidden fixed -top-20 left-1/2 -translate-x-1/2 pointer-events-none">
         <img 
           src="/bg.png" 
           alt="background"
