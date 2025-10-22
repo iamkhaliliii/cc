@@ -38,6 +38,7 @@ export default function BusinessStaffHome() {
   const [scanning, setScanning] = useState(false);
   const [cameraMode, setCameraMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
@@ -173,6 +174,14 @@ export default function BusinessStaffHome() {
     setScannedData(null);
   };
 
+  const handleCloseMenu = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setMenuOpen(false);
+      setIsClosing(false);
+    }, 300);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem(`businessUser_${slug}`);
     router.push(`/panel/b/${slug}`);
@@ -206,18 +215,22 @@ export default function BusinessStaffHome() {
         <div className="fixed inset-0 z-30">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/40 animate-in fade-in duration-300"
-            onClick={() => setMenuOpen(false)}
+            className={`fixed inset-0 bg-black/40 transition-opacity duration-300 ${
+              isClosing ? 'opacity-0' : 'opacity-100'
+            }`}
+            onClick={handleCloseMenu}
           />
           
           {/* Sidebar */}
-          <div className="fixed top-0 right-0 bottom-0 w-80 bg-white shadow-2xl z-40 animate-in slide-in-from-right duration-300">
+          <div className={`fixed top-0 right-0 bottom-0 w-80 bg-white shadow-2xl z-40 transition-transform duration-300 ease-out ${
+            isClosing ? 'translate-x-full' : 'translate-x-0'
+          }`}>
             {/* Sidebar Header */}
             <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-bold">منوی مدیریت</h2>
                 <button
-                  onClick={() => setMenuOpen(false)}
+                  onClick={handleCloseMenu}
                   className="p-1 hover:bg-white/20 rounded-lg transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
