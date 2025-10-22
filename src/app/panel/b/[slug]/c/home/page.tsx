@@ -337,33 +337,58 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
   };
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-4 space-y-4">
+      {/* User Info Card */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="bg-gradient-to-br from-blue-600 to-purple-600 w-20 h-20 rounded-full flex items-center justify-center">
-            <span className="text-3xl text-white font-bold">
-              {user.name?.charAt(0)}
-            </span>
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-800">{user.name}</h2>
-            <p className="text-slate-500 text-sm" dir="ltr">{user.phone}</p>
-            <p className="text-slate-400 text-xs">{business.name}</p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between py-2 border-b border-slate-100">
-            <span className="text-slate-600">ایمیل</span>
-            <span className="text-slate-800 font-medium">{user.email || "ثبت نشده"}</span>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <span className="text-slate-600">امتیاز کل</span>
-            <span className="text-blue-600 font-bold">{user.points?.toLocaleString('fa-IR')}</span>
-          </div>
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-bold text-slate-800">{user.name}</h2>
+          <p className="text-slate-500 text-sm" dir="ltr">{user.phone}</p>
         </div>
       </div>
 
+      {/* Menu Items */}
+      <div className="space-y-2">
+        <button className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <span className="font-medium text-slate-700">پشتیبانی</span>
+          </div>
+          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <button className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="font-medium text-slate-700">درباره باشگاه</span>
+          </div>
+          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <button className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+          <div className="flex items-center gap-3">
+            <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <span className="font-medium text-slate-700">حالت شب / روز</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500">روز</span>
+            <div className="w-12 h-6 bg-slate-200 rounded-full relative">
+              <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow"></div>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      {/* Logout */}
       <button
         onClick={handleLogout}
         className="w-full bg-red-50 rounded-xl p-4 border border-red-200 flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
