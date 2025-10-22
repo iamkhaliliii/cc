@@ -73,10 +73,6 @@ export default function BusinessHomePage() {
           <p className="text-slate-600 text-base md:text-lg">
             به باشگاه {business.name} خوش آمدید
           </p>
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <span className="text-xs text-slate-500">قدرت گرفته از</span>
-            <img src="/logob.svg" alt="Powered by" className="h-5 opacity-70" />
-          </div>
         </div>
 
         {/* CTA Buttons */}
@@ -100,12 +96,10 @@ export default function BusinessHomePage() {
           </Link>
         </div>
 
-        {/* Footer info */}
-        <div className="flex items-center justify-center gap-2 pt-4 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
-          <p className="text-sm text-slate-500">
-            آماده به کار
-          </p>
+        {/* Powered by */}
+        <div className="flex items-center justify-center gap-2 pt-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
+          <span className="text-xs text-slate-500">قدرت گرفته از</span>
+          <img src="/logob.svg" alt="Powered by" className="h-5 opacity-70" />
         </div>
       </main>
     </div>
