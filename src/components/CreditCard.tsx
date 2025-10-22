@@ -9,9 +9,7 @@ interface CreditCardProps {
   userId: number;
   phone: string;
   expiryDate?: string;
-  gradientFrom?: string;
-  gradientVia?: string;
-  gradientTo?: string;
+  backgroundImage?: string;
 }
 
 export default function CreditCard({
@@ -21,9 +19,7 @@ export default function CreditCard({
   userId,
   phone,
   expiryDate = "12/27",
-  gradientFrom = "from-slate-800",
-  gradientVia = "via-slate-700",
-  gradientTo = "to-slate-900"
+  backgroundImage = "/Background.png"
 }: CreditCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -48,11 +44,8 @@ export default function CreditCard({
             {/* Background Image */}
             <div 
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: 'url(/Background.png)' }}
-            >
-              {/* Overlay gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} opacity-70`}></div>
-            </div>
+              style={{ backgroundImage: `url(${backgroundImage})` }}
+            ></div>
 
             {/* Card Content */}
             <div className="relative z-10 h-full p-6 flex flex-col justify-between text-white">
