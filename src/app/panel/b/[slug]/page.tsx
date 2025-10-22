@@ -73,9 +73,10 @@ export default function BusinessHomePage() {
           <p className="text-slate-600 text-base md:text-lg">
             به باشگاه {business.name} خوش آمدید
           </p>
-          {business.address && (
-            <p className="text-sm text-slate-500">{business.address}</p>
-          )}
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <img src="/logob.svg" alt="Powered by" className="h-6 opacity-70" />
+            <span className="text-xs text-slate-500">قدرت گرفته از</span>
+          </div>
         </div>
 
         {/* CTA Buttons */}
