@@ -74,8 +74,8 @@ export default function BusinessHomePage() {
             به باشگاه {business.name} خوش آمدید
           </p>
           <div className="flex items-center justify-center gap-2 mt-3">
-            <img src="/logob.svg" alt="Powered by" className="h-6 opacity-70" />
             <span className="text-xs text-slate-500">قدرت گرفته از</span>
+            <img src="/logob.svg" alt="Powered by" className="h-5 opacity-70" />
           </div>
         </div>
 
