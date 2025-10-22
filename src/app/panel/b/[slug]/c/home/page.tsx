@@ -132,24 +132,55 @@ export default function CustomerHome() {
 function HomeTab({ user, business }: { user: User; business: Business }) {
   return (
     <div className="p-4 space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p className="text-sm opacity-90">سلام،</p>
-            <h2 className="text-2xl font-bold">{user.name}</h2>
+      {/* Credit Card Style */}
+      <div className="relative">
+        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-3xl p-6 text-white shadow-2xl aspect-[1.586/1] relative overflow-hidden">
+          {/* Card Pattern Background */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full translate-y-1/2 -translate-x-1/2"></div>
           </div>
-          <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+
+          {/* Card Content */}
+          <div className="relative z-10 h-full flex flex-col justify-between">
+            {/* Top Section */}
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs opacity-75 mb-1">باشگاه مشتریان</p>
+                <h2 className="text-lg font-bold">{business.name}</h2>
+              </div>
+              <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Middle Section - Points */}
+            <div className="my-4">
+              <p className="text-sm opacity-90 mb-2">موجودی امتیاز</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-5xl font-bold tracking-wider">{user.points?.toLocaleString('fa-IR')}</p>
+                <p className="text-lg opacity-75">امتیاز</p>
+              </div>
+            </div>
+
+            {/* Bottom Section */}
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-xs opacity-75 mb-1">نام دارنده کارت</p>
+                <p className="text-base font-semibold">{user.name}</p>
+              </div>
+              <div className="text-left">
+                <p className="text-xs opacity-75 mb-1">شماره عضویت</p>
+                <p className="text-sm font-mono" dir="ltr">#{user.id.toString().padStart(6, '0')}</p>
+              </div>
+            </div>
           </div>
+
+          {/* Shine Effect */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0"></div>
         </div>
-        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-3">
-          <p className="text-sm opacity-90 mb-1">امتیاز شما در {business.name}</p>
-          <p className="text-3xl font-bold">{user.points?.toLocaleString('fa-IR')} امتیاز</p>
-        </div>
-        <p className="text-xs opacity-75 text-center">باشگاه {business.name}</p>
       </div>
 
       {/* Quick Actions */}
