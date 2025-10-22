@@ -51,10 +51,10 @@ export default function CreditCard({
         qrCanvasRef.current,
         qrData,
         {
-          width: 100,
-          margin: 1,
+          width: 80,
+          margin: 0,
           color: {
-            dark: "#1e40af",
+            dark: "#000000",
             light: "#ffffff"
           }
         }
@@ -138,31 +138,35 @@ export default function CreditCard({
             </div>
 
             {/* Card Content */}
-            <div className="relative z-10 h-full">
+            <div className="relative z-10 h-full p-6">
               {/* Black Magnetic Strip */}
-              <div className="absolute top-8 left-0 w-full h-14 bg-black"></div>
+              <div className="absolute top-0 left-0 w-full h-12 bg-black"></div>
 
-              {/* CVV - Smaller */}
-              <div className="absolute top-28 left-6 w-24">
-                <div className="bg-slate-100 rounded h-8 px-3 py-1.5 flex items-center justify-end">
-                  <p className="text-[8px] uppercase text-slate-500 absolute left-2 top-0.5">CVV</p>
-                  <p className="text-black font-mono font-bold text-sm">***</p>
+              {/* Middle Section */}
+              <div className="absolute top-16 left-0 right-0 px-6 flex items-start justify-between">
+                {/* CVV */}
+                <div className="w-28">
+                  <p className="text-[9px] uppercase text-white/70 mb-1">CVV</p>
+                  <div className="bg-white/90 rounded-md h-9 px-3 flex items-center justify-end">
+                    <p className="text-black font-mono font-bold text-lg tracking-widest">***</p>
+                  </div>
                 </div>
-              </div>
 
-              {/* QR Code */}
-              <div className="absolute top-24 right-6">
-                <div className="bg-white p-2 rounded-lg">
-                  <canvas ref={qrCanvasRef} className="w-24 h-24"></canvas>
+                {/* QR Code */}
+                <div>
+                  <p className="text-[9px] uppercase text-white/70 mb-1 text-left">کد QR</p>
+                  <div className="bg-white p-1.5 rounded-lg shadow-lg">
+                    <canvas ref={qrCanvasRef} className="w-20 h-20"></canvas>
+                  </div>
                 </div>
               </div>
 
               {/* Terms */}
-              <div className="absolute bottom-6 left-6 right-6 text-white text-[9px]">
-                <p className="opacity-90">
+              <div className="absolute bottom-6 left-6 right-6 text-white text-[10px] leading-relaxed">
+                <p className="mb-1.5 opacity-90 font-medium">
                   این کارت متعلق به {businessName} می‌باشد.
                 </p>
-                <p className="opacity-80">
+                <p className="opacity-75 text-[9px]">
                   استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
                 </p>
               </div>
