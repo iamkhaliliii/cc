@@ -37,6 +37,7 @@ export default function BusinessStaffHome() {
   const [scannedData, setScannedData] = useState<CustomerData | null>(null);
   const [scanning, setScanning] = useState(false);
   const [cameraMode, setCameraMode] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
@@ -184,13 +185,66 @@ export default function BusinessStaffHome() {
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <h1 className="text-right text-sm font-medium text-slate-700">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
+        <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h1 className="text-sm font-medium text-slate-700">
             {user.business.name}
           </h1>
         </div>
       </header>
+
+      {/* Menu Dropdown */}
+      {menuOpen && (
+        <>
+          <div 
+            className="fixed inset-0 bg-black/20 z-10"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div className="fixed top-14 right-4 w-64 bg-white rounded-xl shadow-xl border border-slate-200 z-30 overflow-hidden">
+            <div className="p-2">
+              <button className="w-full text-right px-4 py-3 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-3">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span className="text-sm font-medium text-slate-700">گزارش‌گیری</span>
+              </button>
+              <button className="w-full text-right px-4 py-3 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-3">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm font-medium text-slate-700">تنظیمات امتیاز</span>
+              </button>
+              <button className="w-full text-right px-4 py-3 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-3">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                </svg>
+                <span className="text-sm font-medium text-slate-700">مدیریت جوایز</span>
+              </button>
+              <button className="w-full text-right px-4 py-3 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-3">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="text-sm font-medium text-slate-700">مدیریت کارمندان</span>
+              </button>
+              <div className="border-t border-slate-200 my-2"></div>
+              <button className="w-full text-right px-4 py-3 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-3">
+                <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm font-medium text-slate-700">راهنما و پشتیبانی</span>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Content Area */}
       <div className="h-[calc(100vh-9rem)] overflow-y-auto">
