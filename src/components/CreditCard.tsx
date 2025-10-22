@@ -179,6 +179,7 @@ export default function CreditCard({
           </div>
         </div>
       </div>
+      </div>
 
       {/* Card Info Bar Below */}
       <div className="mt-4 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
