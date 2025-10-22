@@ -60,10 +60,12 @@ export default function CustomerHome() {
 
       {/* Content Area */}
       <div className="h-[calc(100vh-9rem)] overflow-y-auto">
-        {activeTab === "home" && <HomeTab user={user} business={business} />}
-        {activeTab === "points" && <PointsTab user={user} business={business} />}
-        {activeTab === "qrcode" && <QRCodeTab user={user} business={business} />}
-        {activeTab === "profile" && <ProfileTab user={user} business={business} slug={slug} />}
+        <div className="max-w-lg mx-auto">
+          {activeTab === "home" && <HomeTab user={user} business={business} />}
+          {activeTab === "points" && <PointsTab user={user} business={business} />}
+          {activeTab === "qrcode" && <QRCodeTab user={user} business={business} />}
+          {activeTab === "profile" && <ProfileTab user={user} business={business} slug={slug} />}
+        </div>
       </div>
 
       {/* Bottom Navigation */}
@@ -73,8 +75,8 @@ export default function CustomerHome() {
             onClick={() => setActiveTab("home")}
             className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
               activeTab === "home"
-                ? "text-blue-600"
-                : "text-slate-400 hover:text-slate-600"
+                ? "text-blue-600 dark:text-blue-500"
+                : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,8 +89,8 @@ export default function CustomerHome() {
             onClick={() => setActiveTab("points")}
             className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
               activeTab === "points"
-                ? "text-blue-600"
-                : "text-slate-400 hover:text-slate-600"
+                ? "text-blue-600 dark:text-blue-500"
+                : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,8 +103,8 @@ export default function CustomerHome() {
             onClick={() => setActiveTab("qrcode")}
             className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
               activeTab === "qrcode"
-                ? "text-blue-600"
-                : "text-slate-400 hover:text-slate-600"
+                ? "text-blue-600 dark:text-blue-500"
+                : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,8 +117,8 @@ export default function CustomerHome() {
             onClick={() => setActiveTab("profile")}
             className={`flex flex-col items-center justify-center gap-1 flex-1 py-2 transition-colors ${
               activeTab === "profile"
-                ? "text-blue-600"
-                : "text-slate-400 hover:text-slate-600"
+                ? "text-blue-600 dark:text-blue-500"
+                : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
             }`}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,14 +211,153 @@ function PointsTab({ user, business }: { user: User; business: Business }) {
   return (
     <div className="p-4 space-y-6">
       {/* Points Summary */}
-      <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg">
-        <p className="text-xs opacity-75 mb-2">{business.name}</p>
-        <div className="text-center">
-          <p className="text-sm opacity-90 mb-2">موجودی امتیاز</p>
-          <p className="text-5xl font-bold mb-4">{user.points?.toLocaleString('fa-IR')}</p>
-          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
-            <p className="text-xs opacity-90">معادل تخفیف</p>
-            <p className="text-xl font-bold">{(user.points * 1000).toLocaleString('fa-IR')} تومان</p>
+      <div className="relative overflow-hidden rounded-3xl shadow-2xl aspect-[1.586/1]">
+        {/* Background Image like CreditCard */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/Background.png)' }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/10"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 h-full p-4 sm:p-6 flex flex-col justify-between text-white">
+          {/* Top */}
+          <div className="flex items-start justify-between">
+            <p className="text-base sm:text-lg font-bold">{business.name}</p>
+            
+            {/* Silver Badge */}
+            <div className="bg-white/20 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1 sm:gap-1.5 border border-white/30 shadow-lg">
+              <span className="text-sm sm:text-base">🥈</span>
+              <span className="text-[10px] sm:text-xs text-white">سطح: <span className="font-bold">نقره‌ای</span></span>
+            </div>
+          </div>
+
+          {/* Center - Points */}
+          <div className="text-center mb-12 sm:mb-16">
+            <p className="text-sm sm:text-base opacity-90 mb-1 sm:mb-0">موجودی امتیاز</p>
+            <p className="text-5xl sm:text-6xl md:text-7xl font-bold">{user.points?.toLocaleString('fa-IR')}</p>
+          </div>
+
+          {/* Spacer */}
+          <div></div>
+        </div>
+
+        {/* Bottom Actions Bar with Blur */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 rounded-b-3xl">
+          <div className="flex items-center justify-between gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-4">
+            {/* Transfer Points */}
+            <button className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </div>
+              <span className="text-[9px] sm:text-[10px] font-medium">انتقال امتیاز</span>
+            </button>
+
+            {/* Add Points */}
+            <button className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <span className="text-[9px] sm:text-[10px] font-medium">افزایش امتیاز</span>
+            </button>
+
+            {/* Spend Points */}
+            <button className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <span className="text-[9px] sm:text-[10px] font-medium">خرج کردن</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Points History */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-slate-700 dark:text-slate-200 px-1">تاریخچه امتیازات</h3>
+        
+        <div className="space-y-2">
+          {/* Sample transactions - In real app, this would come from backend */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700 flex items-center justify-between transition-colors min-h-[80px]">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-white mb-2">
+                  افزایش امتیاز <span className="text-xs  mr-1 font-normal text-slate-400 dark:text-slate-500">۲ روز پیش</span>
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">فروشگاه میخک نقره‌ای</p>
+              </div>
+            </div>
+            <div className="text-left">
+              <span className="text-base font-bold text-green-600 dark:text-green-400 block mb-0.5 tracking-tighter">۵۰۰ +</span>
+              <span className="text-[10px] text-amber-600 dark:text-amber-400">معتبر تا ۲۵ اسفند ۱۴۰۴</span>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700 flex items-center justify-between transition-colors min-h-[80px]">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-white mb-2">
+                  خرج امتیاز <span className="text-xs  mr-1 font-normal text-slate-400 dark:text-slate-500">۵ روز پیش</span>
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">فروشگاه میخک نقره‌ای</p>
+              </div>
+            </div>
+            <span className="text-base font-bold text-slate-800 dark:text-white tracking-tighter">۲۰۰ -</span>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700 flex items-center justify-between transition-colors min-h-[80px]">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-white mb-2">
+                  انتقال امتیاز <span className="text-xs  mr-1 font-normal text-slate-400 dark:text-slate-500">۱ هفته پیش</span>
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">انتقال به بهروز مبارکی</p>
+              </div>
+            </div>
+            <span className="text-base font-bold text-slate-800 dark:text-white tracking-tighter">۳۰۰ -</span>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700 flex items-center justify-between transition-colors min-h-[80px]">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-white mb-2">
+                  افزایش امتیاز <span className="text-xs  mr-1 font-normal text-slate-400 dark:text-slate-500">۲ هفته پیش</span>
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">هدیه روز تولد</p>
+              </div>
+            </div>
+            <div className="text-left">
+              <span className="text-base font-bold text-green-600 dark:text-green-400 block mb-0.5 tracking-tighter">۱٬۲۰۰ +</span>
+              <span className="text-[10px] text-amber-600 dark:text-amber-400">معتبر تا ۱۵ بهمن ۱۴۰۴</span>
+            </div>
           </div>
         </div>
       </div>
@@ -362,8 +503,16 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
     <div className="p-4 space-y-4">
       {/* User Info Card */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-        <div className="text-center mb-6">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-white">{user.name}</h2>
+        <div className="text-center">
+          {/* Avatar with first letter */}
+          <div className="flex justify-center mb-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-3xl font-bold text-white">
+                {user.name.charAt(0)}
+              </span>
+            </div>
+          </div>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-1">{user.name}</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm" dir="ltr">{user.phone}</p>
         </div>
       </div>
@@ -399,13 +548,13 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
           className="w-full bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
-            <span className="font-medium text-slate-700">حالت شب / روز</span>
+            <span className="font-medium text-slate-700 dark:text-slate-200">حالت شب / روز</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">{isDark ? 'شب' : 'روز'}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">{isDark ? 'شب' : 'روز'}</span>
             <div className={`w-12 h-6 rounded-full relative transition-colors ${isDark ? 'bg-blue-600' : 'bg-slate-200'}`}>
               <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${isDark ? 'right-1' : 'left-1'}`}></div>
             </div>
@@ -416,12 +565,12 @@ function ProfileTab({ user, business, slug }: { user: User; business: Business; 
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="w-full bg-red-50 rounded-xl p-4 border border-red-200 flex items-center justify-center gap-2 hover:bg-red-100 transition-colors"
+        className="w-full bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800 flex items-center justify-center gap-2 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
       >
-        <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
         </svg>
-        <span className="font-medium text-red-600">خروج از حساب</span>
+        <span className="font-medium text-red-600 dark:text-red-400">خروج از حساب</span>
       </button>
     </div>
   );

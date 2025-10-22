@@ -91,12 +91,15 @@ export default function CreditCard({
             <div 
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${backgroundImage})` }}
-            ></div>
+            >
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-black/10"></div>
+            </div>
 
             {/* Card Content */}
             <div className="relative z-10 h-full p-6 flex flex-col justify-between text-white">
               {/* Top Section */}
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between -mb-12">
                 <div>
                   <p className="text-xs uppercase tracking-wide opacity-90">باشگاه</p>
                   <p className="text-lg font-bold mt-1">{businessName}</p>
@@ -108,7 +111,6 @@ export default function CreditCard({
                   className="w-8 h-10 opacity-90  rotate-90"
                 />
               </div>
-
 
               {/* Card Number with Emboss Effect */}
               <div className="my-1 flex items-center justify-between w-full gap-1 sm:gap-2 md:gap-3">
@@ -123,18 +125,22 @@ export default function CreditCard({
                 ))}
               </div>
 
-              {/* Bottom Info */}
-              <div className="flex items-end justify-between">
+              {/* Spacer */}
+              <div></div>
+            </div>
+
+            {/* Bottom Info Bar with Blur */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 rounded-b-3xl">
+              <div className="flex items-center justify-between px-6 py-5 text-white">
                 <div>
                   <p className="text-[9px] uppercase tracking-wide opacity-80">نام دارنده</p>
                   <p className="text-sm font-bold uppercase tracking-wide mt-0.5">{userName}</p>
                 </div>
-                <div>
-                  <p className="text-[9px] uppercase tracking-wide opacity-80 text-left">تاریخ انقضا</p>
+                <div className="text-left">
+                  <p className="text-[9px] uppercase tracking-wide opacity-80">تاریخ انقضا</p>
                   <p className="text-sm font-mono tracking-wide mt-0.5" dir="ltr">{expiryDate}</p>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -207,17 +213,16 @@ export default function CreditCard({
         {/* Left - Flip Action */}
         <button
           onClick={() => setIsFlipped(!isFlipped)}
-          className="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors group"
+          className="flex flex-col items-center gap-1 group"
         >
-          <div className="w-8 h-8 bg-slate-50 dark:bg-slate-700 group-hover:bg-slate-100 dark:group-hover:bg-slate-600 rounded-lg flex items-center justify-center transition-colors">
+          <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 group-hover:bg-slate-200 dark:group-hover:bg-slate-600 rounded-lg flex items-center justify-center transition-colors">
             <img 
               src="/flip.svg" 
               alt="flip"
-              className="w-5 h-5 opacity-40 group-hover:opacity-60"
-              style={{ filter: 'grayscale(100%)' }}
+              className="w-5 h-5 opacity-50 group-hover:opacity-70 dark:opacity-60 dark:group-hover:opacity-80 transition-opacity dark:invert"
             />
           </div>
-          <span className="text-[10px] font-medium">
+          <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
             چرخش کارت
           </span>
         </button>
