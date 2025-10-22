@@ -146,22 +146,13 @@ export default function CreditCard({
               <div className="absolute top-16 left-0 right-0 bottom-0 px-6 flex justify-between">
                 {/* Left Side - Text */}
                 <div className="flex flex-col justify-between py-4">
-                  {/* Card Info */}
-                  <div className="text-white space-y-2">
-                    <div>
-                      <p className="text-[9px] uppercase opacity-70">نام دارنده</p>
-                      <p className="text-sm font-bold">{userName}</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] uppercase opacity-70">کسب‌وکار</p>
-                      <p className="text-xs font-medium opacity-90">{businessName}</p>
-                    </div>
-                  </div>
-
                   {/* Terms */}
-                  <div className="text-white text-[9px] leading-relaxed max-w-[200px]">
-                    <p className="opacity-80">
-                      استفاده از این کارت منوط به قوانین باشگاه مشتریان است.
+                  <div className="text-white text-[10px] leading-relaxed max-w-[180px]">
+                    <p className="mb-1.5 opacity-90 font-medium">
+                      این کارت متعلق به {businessName} می‌باشد.
+                    </p>
+                    <p className="opacity-75 text-[9px]">
+                      استفاده از این کارت منوط به قوانین و مقررات باشگاه مشتریان است.
                     </p>
                   </div>
                 </div>
