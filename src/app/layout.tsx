@@ -36,9 +36,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body
         className={`${vazirmatn.variable} font-sans antialiased`}
+        suppressHydrationWarning
       >
         {children}
       </body>
