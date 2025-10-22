@@ -202,16 +202,19 @@ export default function BusinessStaffHome() {
       </header>
 
       {/* Sidebar Menu */}
-      {menuOpen && (
-        <>
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/40 z-30 transition-opacity"
-            onClick={() => setMenuOpen(false)}
-          />
-          
-          {/* Sidebar */}
-          <div className="fixed top-0 right-0 bottom-0 w-80 bg-white shadow-2xl z-40 transform transition-transform duration-300">
+      <div className={`fixed inset-0 z-30 pointer-events-none ${menuOpen ? 'pointer-events-auto' : ''}`}>
+        {/* Backdrop */}
+        <div 
+          className={`fixed inset-0 bg-black/40 transition-opacity duration-300 ${
+            menuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setMenuOpen(false)}
+        />
+        
+        {/* Sidebar */}
+        <div className={`fixed top-0 right-0 bottom-0 w-80 bg-white shadow-2xl z-40 transition-transform duration-300 ease-in-out ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}>
             {/* Sidebar Header */}
             <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white">
               <div className="flex items-center justify-between mb-4">
@@ -275,8 +278,8 @@ export default function BusinessStaffHome() {
               </button>
             </div>
           </div>
-        </>
-      )}
+        </div>
+      </div>
 
       {/* Content Area */}
       <div className="h-[calc(100vh-9rem)] overflow-y-auto">
