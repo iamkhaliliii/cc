@@ -59,8 +59,8 @@ export default function CustomerHome() {
       </header>
 
       {/* Content Area */}
-      <div className="h-[calc(100vh-9rem)] overflow-y-auto">
-        <div className="max-w-lg mx-auto">
+      <div className={`h-[calc(100vh-9rem)] ${activeTab === "points" ? "" : "overflow-y-auto"}`}>
+        <div className="max-w-lg mx-auto h-full">
           {activeTab === "home" && <HomeTab user={user} business={business} />}
           {activeTab === "points" && <PointsTab user={user} business={business} />}
           {activeTab === "qrcode" && <QRCodeTab user={user} business={business} />}
@@ -209,35 +209,58 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
 
 function PointsTab({ user, business }: { user: User; business: Business }) {
   return (
-    <div className="p-4 space-y-6">
-      {/* Points Summary */}
-      <div className="relative overflow-hidden rounded-3xl shadow-2xl aspect-[1.586/1]">
+    <div className="h-full flex flex-col">
+      {/* Points Summary - Fixed */}
+      <div className="flex-shrink-0 p-4 pb-0">
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl aspect-[1.586/1]">
         {/* Background Image like CreditCard */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(/Background.png)' }}
         >
           {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute inset-0 bg-black/5"></div>
         </div>
 
         {/* Content */}
         <div className="relative z-10 h-full p-4 sm:p-6 flex flex-col justify-between text-white">
           {/* Top */}
           <div className="flex items-start justify-between">
-            <p className="text-base sm:text-lg font-bold">{business.name}</p>
+            {/* Left - Name + Badge (Mobile) / Name (Desktop) */}
+            <div className="text-right sm:text-right">
+              {/* Mobile - Name + Badge */}
+              <div className="sm:hidden">
+                <p className="text-base font-bold mb-2">{business.name}</p>
+                <div className="inline-flex bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full items-center gap-1.5 border border-white/30 shadow-lg">
+                  <span className="text-base">🥈</span>
+                  <span className="text-xs text-white">سطح: <span className="font-bold">نقره‌ای</span></span>
+                </div>
+              </div>
+              
+              {/* Desktop - Name */}
+              <p className="hidden sm:block text-lg font-bold">{business.name}</p>
+            </div>
             
-            {/* Silver Badge */}
-            <div className="bg-white/20 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1 sm:gap-1.5 border border-white/30 shadow-lg">
-              <span className="text-sm sm:text-base">🥈</span>
-              <span className="text-[10px] sm:text-xs text-white">سطح: <span className="font-bold">نقره‌ای</span></span>
+            {/* Right - Points (Mobile) / Badge (Desktop) */}
+            <div className="text-left sm:text-left">
+              {/* Mobile - Points */}
+              <div className="sm:hidden p-2">
+                <p className="text-sm opacity-90 mb-1">موجودی امتیاز</p>
+                <p className="text-6xl font-bold tracking-tighter">{user.points?.toLocaleString('fa-IR')}</p>
+              </div>
+              
+              {/* Desktop - Badge only */}
+              <div className="hidden sm:flex bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full items-center gap-1.5 border border-white/30 shadow-lg">
+                <span className="text-base">🥈</span>
+                <span className="text-xs text-white">سطح: <span className="font-bold">نقره‌ای</span></span>
+              </div>
             </div>
           </div>
 
-          {/* Center - Points */}
-          <div className="text-center mb-12 sm:mb-16">
-            <p className="text-sm sm:text-base opacity-90 mb-1 sm:mb-0">موجودی امتیاز</p>
-            <p className="text-5xl sm:text-6xl md:text-7xl font-bold">{user.points?.toLocaleString('fa-IR')}</p>
+          {/* Center - Points (Desktop only) */}
+          <div className="hidden sm:block text-center mb-16">
+            <p className="text-base opacity-90 mb-0">موجودی امتیاز</p>
+            <p className="text-6xl md:text-7xl font-bold">{user.points?.toLocaleString('fa-IR')}</p>
           </div>
 
           {/* Spacer */}
@@ -245,44 +268,46 @@ function PointsTab({ user, business }: { user: User; business: Business }) {
         </div>
 
         {/* Bottom Actions Bar with Blur */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 rounded-b-3xl">
-          <div className="flex items-center justify-between gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-4">
+        <div className="absolute bottom-0 left-0 right-0 bg-black/20 backdrop-blur-md border-t border-white/20 rounded-b-3xl">
+          <div className="flex items-center justify-between gap-2 sm:gap-2 px-3 sm:px-4 py-3 sm:py-4">
             {/* Transfer Points */}
-            <button className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="flex-1 flex flex-col items-center gap-1.5 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
+              <div className="w-11 h-11 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
               </div>
-              <span className="text-[9px] sm:text-[10px] font-medium">انتقال امتیاز</span>
+              <span className="text-[10px] sm:text-[10px] font-medium">انتقال امتیاز</span>
             </button>
 
             {/* Add Points */}
-            <button className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="flex-1 flex flex-col items-center gap-1.5 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
+              <div className="w-11 h-11 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
-              <span className="text-[9px] sm:text-[10px] font-medium">افزایش امتیاز</span>
+              <span className="text-[10px] sm:text-[10px] font-medium">افزایش امتیاز</span>
             </button>
 
             {/* Spend Points */}
-            <button className="flex-1 flex flex-col items-center gap-1 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button className="flex-1 flex flex-col items-center gap-1.5 sm:gap-1.5 text-white hover:opacity-80 transition-opacity">
+              <div className="w-11 h-11 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <span className="text-[9px] sm:text-[10px] font-medium">خرج کردن</span>
+              <span className="text-[10px] sm:text-[10px] font-medium">خرج کردن</span>
             </button>
           </div>
         </div>
+        </div>
       </div>
 
-      {/* Points History */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-bold text-slate-700 dark:text-slate-200 px-1">تاریخچه امتیازات</h3>
+      {/* Points History - Scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-4">
+        <div className="space-y-3">
+          <h3 className="text-sm font-bold text-slate-700 dark:text-slate-200 px-1">تاریخچه امتیازات</h3>
         
         <div className="space-y-2">
           {/* Sample transactions - In real app, this would come from backend */}
@@ -359,6 +384,7 @@ function PointsTab({ user, business }: { user: User; business: Business }) {
               <span className="text-[10px] text-amber-600 dark:text-amber-400">معتبر تا ۱۵ بهمن ۱۴۰۴</span>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
