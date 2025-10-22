@@ -18,19 +18,38 @@ export default function Home() {
       </div>
 
       {/* Mobile Layout */}
-      <div className="md:hidden relative z-10 min-h-screen flex flex-col items-center justify-between py-16 px-6">
-        {/* Logo */}
-        <div className="flex-1 flex items-center">
-          <img src="/lincard.svg" alt="Linkard" className="h-14" />
-        </div>
+      <div className="md:hidden relative z-10 min-h-screen flex items-center justify-center p-6">
+        {/* Frosted Glass Card */}
+        <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl rounded-[3rem] p-8 shadow-2xl border border-white/20">
+          {/* Glassmorphic Card Icon */}
+          <div className="flex justify-center mb-12">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/30 to-purple-500/30 blur-3xl"></div>
+              <div className="relative w-48 h-32 bg-white/20 backdrop-blur-xl rounded-3xl border border-white/30 shadow-2xl transform -rotate-12 flex items-center justify-center">
+                {/* Card details - subtle */}
+                <div className="absolute top-6 left-6 w-10 h-8 bg-white/30 rounded"></div>
+                <div className="absolute bottom-6 left-6 right-6 space-y-2">
+                  <div className="h-2 bg-white/20 rounded w-3/4"></div>
+                  <div className="h-2 bg-white/20 rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        {/* Bottom Content */}
-        <div className="w-full space-y-6 text-center">
-          <p className="text-white text-base opacity-90">به سامانه باشگاه مشتریان خوش آمدید</p>
-          
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <img src="/lincard.svg" alt="Linkard" className="h-12" />
+          </div>
+
+          {/* Text */}
+          <p className="text-white text-center mb-12 leading-relaxed opacity-90">
+            به سامانه باشگاه مشتریان خوش آمدید
+          </p>
+
+          {/* CTA Button */}
           <button
             onClick={() => setShowMenu(true)}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-4 px-8 rounded-full shadow-2xl active:scale-95 transition-all"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all text-lg"
           >
             ورود
           </button>
@@ -38,27 +57,40 @@ export default function Home() {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:flex md:items-center md:justify-center md:min-h-screen md:p-8">
-        <div className="relative max-w-5xl w-full bg-white/5 backdrop-blur-lg rounded-[3rem] border border-white/20 overflow-hidden shadow-2xl p-20">
+      <div className="hidden md:flex md:items-center md:justify-center md:min-h-screen md:p-12">
+        <div className="relative max-w-2xl w-full bg-white/10 backdrop-blur-2xl rounded-[3rem] border border-white/20 shadow-2xl p-16">
+          {/* Glassmorphic Card Icon */}
+          <div className="flex justify-center mb-16">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/40 to-purple-500/40 blur-3xl"></div>
+              <div className="relative w-64 h-40 bg-white/20 backdrop-blur-xl rounded-[2.5rem] border border-white/30 shadow-2xl transform -rotate-12 flex items-center justify-center">
+                {/* Card details */}
+                <div className="absolute top-8 left-8 w-14 h-10 bg-white/30 rounded-lg"></div>
+                <div className="absolute bottom-8 left-8 right-8 space-y-3">
+                  <div className="h-3 bg-white/20 rounded w-3/4"></div>
+                  <div className="h-2 bg-white/20 rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Logo */}
-          <div className="text-center mb-12">
-            <img src="/lincard.svg" alt="Linkard" className="h-20 mx-auto" />
+          <div className="flex justify-center mb-10">
+            <img src="/lincard.svg" alt="Linkard" className="h-16" />
           </div>
 
           {/* Text */}
-          <div className="text-center text-white space-y-4 mb-12">
-            <p className="text-2xl opacity-90">به سامانه باشگاه مشتریان خوش آمدید</p>
-          </div>
+          <p className="text-white text-center text-xl mb-12 leading-relaxed opacity-90">
+            به سامانه باشگاه مشتریان خوش آمدید
+          </p>
 
           {/* CTA */}
-          <div className="flex justify-center">
-            <button
-              onClick={() => setShowMenu(true)}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-6 px-20 rounded-full text-xl shadow-2xl hover:scale-105 transition-all"
-            >
-              ورود
-            </button>
-          </div>
+          <button
+            onClick={() => setShowMenu(true)}
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-5 px-12 rounded-full text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+          >
+            ورود
+          </button>
         </div>
       </div>
 
