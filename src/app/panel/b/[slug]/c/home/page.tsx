@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import CreditCard from "@/components/CreditCard";
+import InstallPWA from "@/components/InstallPWA";
 
 type Tab = "home" | "points" | "qrcode" | "profile";
 
@@ -49,6 +50,9 @@ export default function CustomerHome() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20 transition-colors">
+      {/* Install PWA Popup */}
+      <InstallPWA />
+      
       {/* Header */}
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10 transition-colors">
         <div className="max-w-lg mx-auto px-4 py-3">
@@ -494,7 +498,7 @@ function QRCodeTab({ user, business }: { user: User; business: Business }) {
   );
 }
 
-function ProfileTab({ user, business, slug }: { user: User; business: Business; slug: string }) {
+function ProfileTab({ user, slug }: { user: User; business: Business; slug: string }) {
   const router = useRouter();
   const [isDark, setIsDark] = useState(false);
 

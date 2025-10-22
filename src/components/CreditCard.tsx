@@ -2,6 +2,24 @@
 
 import { useState, useEffect, useRef } from "react";
 import QRCode from "qrcode";
+import FuturisticPattern from "./FuturisticPattern";
+
+// Load OCR-A font
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = `
+    @font-face {
+      font-family: 'OCR-A';
+      src: url('/fonts/OCR-A.woff2') format('woff2'),
+           url('/fonts/OCR-A.woff') format('woff'),
+           url('/fonts/OCR-A.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 interface CreditCardProps {
   userName: string;
@@ -112,19 +130,13 @@ export default function CreditCard({
           }}
         >
           <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
-            {/* Background Image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${backgroundImage})` }}
-            >
-              {/* Dark overlay */}
-              <div className="absolute inset-0 bg-black/10"></div>
-            </div>
+            {/* Futuristic Pattern Background */}
+            <FuturisticPattern />
 
             {/* Card Content */}
             <div className="relative z-10 h-full p-6 flex flex-col justify-between text-white">
               {/* Top Section */}
-              <div className="flex items-start justify-between -mb-12">
+              <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-wide opacity-90">باشگاه</p>
                   <p className="text-lg font-bold mt-1">{businessName}</p>
@@ -133,7 +145,7 @@ export default function CreditCard({
                 <img 
                   src="/Smart-Chip-CPU-by-Merlin2525.svg" 
                   alt="chip"
-                  className="w-8 h-10 opacity-90  rotate-90"
+                  className="w-10 h-12 opacity-99  rotate-90"
                 />
               </div>
 
@@ -142,7 +154,8 @@ export default function CreditCard({
                 {cardNumber.match(/.{1,4}/g)?.map((group, index) => (
                   <span 
                     key={index}
-                    className="text-3xl sm:text-2xl md:text-4xl font-mono emboss-text select-none flex-1 text-center"
+                    className="text-3xl sm:text-2xl md:text-4xl emboss-text select-none flex-1 text-center"
+                    style={{ fontFamily: "'OCR-A', monospace" }}
                     dir="ltr"
                   >
                     {group}
@@ -150,20 +163,15 @@ export default function CreditCard({
                 ))}
               </div>
 
-              {/* Spacer */}
-              <div></div>
-            </div>
-
-            {/* Bottom Info Bar with Blur */}
-            <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 rounded-b-3xl">
-              <div className="flex items-center justify-between px-6 py-5 text-white">
+              {/* Bottom Section - Name and Expiry */}
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[9px] uppercase tracking-wide opacity-80">نام دارنده</p>
-                  <p className="text-sm font-bold uppercase tracking-wide mt-0.5">{userName}</p>
+                  <p className="text-[9px] uppercase tracking-wide text-white/70 font-medium">نام دارنده</p>
+                  <p className="text-sm font-bold uppercase tracking-wide mt-0.5 text-white">{userName}</p>
                 </div>
                 <div className="text-left">
-                  <p className="text-[9px] uppercase tracking-wide opacity-80">تاریخ انقضا</p>
-                  <p className="text-sm font-mono tracking-wide mt-0.5" dir="ltr">{expiryDate}</p>
+                  <p className="text-[9px] uppercase tracking-wide text-white/70 font-medium">تاریخ انقضا</p>
+                  <p className="text-sm tracking-wide mt-0.5 text-white" style={{ fontFamily: "'OCR-A', monospace" }} dir="ltr">{expiryDate}</p>
                 </div>
               </div>
             </div>
@@ -186,14 +194,22 @@ export default function CreditCard({
           }}
         >
           <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
-            {/* Background Image - Same as front */}
+            {/* Silver Metallic Background with Linear Gradients */}
             <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${backgroundImage})` }}
-            >
-              {/* Dark overlay for back */}
-              <div className="absolute inset-0 bg-black/30"></div>
-            </div>
+              className="absolute inset-0"
+              style={{ 
+                backgroundImage: `
+                  linear-gradient(135deg, hsla(0,0%,100%,.5) 0%, transparent 8%),
+                  linear-gradient(225deg, hsla(0,0%,100%,.6) 0%, transparent 12%),
+                  linear-gradient(45deg, hsla(0,0%,100%,.5) 0%, transparent 7%),
+                  linear-gradient(315deg, hsla(0,0%,100%,.5) 0%, transparent 5%),
+                  repeating-linear-gradient(45deg, hsla(0,0%,0%,0) 0%, hsla(0,0%,0%,0) 3%, hsla(0,0%,0%,.1) 3.5%, hsla(0,0%,0%,0) 4%),
+                  repeating-linear-gradient(45deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 6%, hsla(0,0%,100%,.1) 7.5%, hsla(0,0%,100%,0) 9%),
+                  repeating-linear-gradient(45deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.2) 2.2%, hsla(0,0%,100%,0) 3.2%),
+                  linear-gradient(45deg, hsla(0,0%,90%,1) 0%, hsla(0,0%,85%,1) 50%, hsla(0,0%,60%,1) 100%)
+                `
+              }}
+            ></div>
 
             {/* Card Content */}
             <div className="relative z-10 h-full">
@@ -205,8 +221,8 @@ export default function CreditCard({
                 {/* Left Side - Text & CVV */}
                 <div className="flex flex-col justify-between py-4 max-w-[60%]">
                   {/* Text */}
-                  <div className="text-white leading-relaxed">
-                    <p className="mb-1.5 opacity-90 font-medium text-[10px] md:text-xs lg:text-sm">
+                  <div className="text-slate-800 leading-relaxed">
+                    <p className="mb-1.5 font-medium text-[10px] md:text-xs lg:text-sm">
                       این کارت متعلق به {businessName} می‌باشد.
                     </p>
                     <p className="opacity-75 text-[9px] md:text-[10px] lg:text-xs">
@@ -216,8 +232,8 @@ export default function CreditCard({
 
                   {/* CVV - Scales with screen */}
                   <div className="text-right">
-                    <p className="text-[8px] md:text-[9px] lg:text-[10px] text-white/60 mb-1">CVV</p>
-                    <div className="bg-white/90 rounded px-2.5 md:px-3 lg:px-4 py-1 md:py-1.5 inline-block">
+                    <p className="text-[8px] md:text-[9px] lg:text-[10px] text-slate-600 mb-1">CVV</p>
+                    <div className="bg-white rounded px-2.5 md:px-3 lg:px-4 py-1 md:py-1.5 inline-block border border-slate-300 shadow-sm">
                       <p className="text-black font-mono font-bold text-xs md:text-sm lg:text-base tracking-wide">***</p>
                     </div>
                   </div>

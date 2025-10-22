@@ -28,6 +28,28 @@ const vazirmatn = localFont({
 export const metadata: Metadata = {
   title: "باشگاه مشتریان",
   description: "سامانه مدیریت باشگاه مشتریان",
+  manifest: "/manifest.json",
+  themeColor: "#2563eb",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "باشگاه مشتریان",
+  },
+  icons: {
+    icon: [
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
