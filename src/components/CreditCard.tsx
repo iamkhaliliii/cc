@@ -44,9 +44,15 @@ export default function CreditCard({
       }`}>
         {/* Front of Card */}
         <div className="absolute w-full h-full backface-hidden">
-          <div className={`relative w-full h-full bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} rounded-3xl overflow-hidden shadow-2xl`}>
-            {/* Decorative Strips */}
-
+          <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
+            {/* Background Image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: 'url(/Background.png)' }}
+            >
+              {/* Overlay gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${gradientFrom} ${gradientVia} ${gradientTo} opacity-70`}></div>
+            </div>
 
             {/* Card Content */}
             <div className="relative z-10 h-full p-6 flex flex-col justify-between text-white">
@@ -56,14 +62,12 @@ export default function CreditCard({
                   <p className="text-xs uppercase tracking-wide opacity-90">باشگاه</p>
                   <p className="text-lg font-bold mt-1">{businessName}</p>
                 </div>
-                <div className="w-10 h-8 bg-gradient-to-br from-amber-200 via-amber-300 to-amber-400 rounded-lg relative overflow-hidden shadow-md">
-                <div className="absolute inset-0 grid grid-cols-3 gap-[1px] p-1.5">
-                  {[...Array(9)].map((_, i) => (
-                    <div key={i} className="bg-amber-600/30 rounded-[1px]"></div>
-                  ))}
-                </div>
-                <div className="absolute inset-3 border border-amber-700/40 rounded-md"></div>
-              </div>
+                {/* Chip SVG */}
+                <img 
+                  src="/Smart-Chip-CPU-by-Merlin2525.svg" 
+                  alt="chip"
+                  className="w-12 h-14 opacity-95 drop-shadow-lg"
+                />
               </div>
 
 
