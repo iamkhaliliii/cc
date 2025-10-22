@@ -78,14 +78,39 @@ export default function CreditCard({
     <div className="relative w-full max-w-md mx-auto">
       {/* Card with 3D flip */}
       <div 
-        className="relative w-full aspect-[1.586/1] cursor-pointer perspective-1000"
+        className="relative w-full aspect-[1.586/1] cursor-pointer"
         onClick={() => setIsFlipped(!isFlipped)}
+        style={{ 
+          perspective: '1000px',
+          WebkitPerspective: '1000px'
+        }}
       >
-      <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${
-        isFlipped ? 'rotate-y-180' : ''
-      }`}>
+      <div 
+        className="relative w-full h-full transition-transform duration-700"
+        style={{ 
+          transformStyle: 'preserve-3d',
+          WebkitTransformStyle: 'preserve-3d',
+          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+          WebkitTransform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+          transition: 'transform 0.7s',
+          WebkitTransition: '-webkit-transform 0.7s'
+        }}
+      >
         {/* Front of Card */}
-        <div className="absolute w-full h-full backface-hidden">
+        <div 
+          className="absolute w-full h-full" 
+          style={{ 
+            WebkitBackfaceVisibility: 'hidden', 
+            backfaceVisibility: 'hidden',
+            MozBackfaceVisibility: 'hidden',
+            transform: 'rotateY(0deg) translateZ(1px)',
+            WebkitTransform: 'rotateY(0deg) translateZ(1px)',
+            visibility: isFlipped ? 'hidden' : 'visible',
+            opacity: isFlipped ? 0 : 1,
+            transition: 'opacity 0s 0.35s, visibility 0s 0.35s',
+            zIndex: 2
+          }}
+        >
           <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
             {/* Background Image */}
             <div 
@@ -146,7 +171,20 @@ export default function CreditCard({
         </div>
 
         {/* Back of Card */}
-        <div className="absolute w-full h-full backface-hidden rotate-y-180">
+        <div 
+          className="absolute w-full h-full" 
+          style={{ 
+            WebkitBackfaceVisibility: 'hidden', 
+            backfaceVisibility: 'hidden',
+            MozBackfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg) translateZ(1px)',
+            WebkitTransform: 'rotateY(180deg) translateZ(1px)',
+            visibility: isFlipped ? 'visible' : 'hidden',
+            opacity: isFlipped ? 1 : 0,
+            transition: 'opacity 0s 0.35s, visibility 0s 0.35s',
+            zIndex: 1
+          }}
+        >
           <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl">
             {/* Background Image - Same as front */}
             <div 
