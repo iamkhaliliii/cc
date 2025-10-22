@@ -118,6 +118,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  img {
+    max-width: none;
+  }
 }
 
 /* 3D Transform utilities */
