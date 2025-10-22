@@ -51,8 +51,8 @@ export default function CustomerHome() {
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-3">
-          <h1 className="text-center text-sm font-medium text-slate-700">
-            باشگاه {business.name}
+          <h1 className="text-right text-sm font-medium text-slate-700">
+            باشگاه مشتریان {business.name}
           </h1>
         </div>
       </header>
