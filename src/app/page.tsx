@@ -8,12 +8,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: '#2F01B0' }}>
-      {/* Background Image - Positioned at top */}
-      <div className="fixed top-0 left-0 right-0 h-screen flex items-start justify-center pointer-events-none overflow-hidden">
+      {/* Background Image - Positioned at top with overflow */}
+      <div className="fixed -top-20 left-1/2 -translate-x-1/2 pointer-events-none">
         <img 
           src="/bg.png" 
           alt="background"
-          className="w-full h-auto object-cover object-top"
+          className="w-[120vw] h-auto"
         />
       </div>
 
