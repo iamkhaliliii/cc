@@ -139,7 +139,9 @@
 
 /* Embossed text effect for card numbers */
 .emboss-text {
-  font-family: var(--font-share-tech-mono), 'Share Tech Mono', 'Courier New', monospace;
+  font-family: var(--font-changa), "Changa", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
   color: transparent;
   text-shadow: -2px -2px 2px rgba(255,255,255,1),
                 1px 1px 1px rgba(0,0,0,0.9),
