@@ -59,7 +59,7 @@ export default function CreditCard({
                 <img 
                   src="/Smart-Chip-CPU-by-Merlin2525.svg" 
                   alt="chip"
-                  className="w-12 h-14 opacity-95 drop-shadow-lg"
+                  className="w-12 h-14 opacity-95 drop-shadow-lg rotate-90"
                 />
               </div>
 
