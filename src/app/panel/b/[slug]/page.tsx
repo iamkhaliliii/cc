@@ -78,14 +78,21 @@ export default function BusinessHomePage() {
         {/* CTA Buttons - Side by side */}
         <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
           <Link href={`/panel/b/${slug}/c/login`}>
-            <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-4 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
-              <span className="text-base">پنل مشتریان</span>
+            <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-4 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex flex-col items-center gap-2 group">
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span className="text-sm">پنل مشتریان</span>
             </button>
           </Link>
 
           <Link href={`/panel/b/${slug}/b/login`}>
-            <button className="w-full bg-white hover:bg-slate-50 text-slate-700 font-medium py-4 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 border-2 border-slate-200">
-              <span className="text-base">پنل اعضا</span>
+            <button className="w-full bg-white hover:bg-slate-50 text-slate-700 font-medium py-4 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 border-2 border-slate-200 flex flex-col items-center gap-2 group">
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="text-sm">پنل مدیریت</span>
             </button>
           </Link>
         </div>
