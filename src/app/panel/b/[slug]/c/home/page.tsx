@@ -131,14 +131,20 @@ export default function CustomerHome() {
 
 function HomeTab({ user, business }: { user: User; business: Business }) {
   return (
-    <div className="p-4 space-y-6">
-      {/* Credit Card Style */}
-      <div className="relative">
-        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-3xl p-6 text-white shadow-2xl aspect-[1.586/1] relative overflow-hidden">
-          {/* Card Pattern Background */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white rounded-full translate-y-1/2 -translate-x-1/2"></div>
+    <div className="p-4 space-y-5">
+      {/* Premium Credit Card */}
+      <div className="relative group">
+        {/* Card Shadow Layer */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-[28px] blur-xl opacity-60 group-hover:opacity-80 transition-opacity"></div>
+        
+        <div className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-[24px] p-6 text-white shadow-2xl aspect-[1.586/1] overflow-hidden transform group-hover:scale-[1.02] transition-all duration-300">
+          {/* Animated Background Pattern */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-white to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tl from-white to-transparent rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
+            <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white rounded-full opacity-40"></div>
+            <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-white rounded-full opacity-30"></div>
+            <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-white rounded-full opacity-25"></div>
           </div>
 
           {/* Card Content */}
@@ -146,72 +152,146 @@ function HomeTab({ user, business }: { user: User; business: Business }) {
             {/* Top Section */}
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs opacity-75 mb-1">باشگاه مشتریان</p>
-                <h2 className="text-lg font-bold">{business.name}</h2>
+                <p className="text-[10px] uppercase tracking-wide opacity-80 mb-1.5 font-medium">باشگاه مشتریان</p>
+                <h2 className="text-xl font-bold tracking-tight">{business.name}</h2>
               </div>
-              <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              <div className="bg-white/15 backdrop-blur-lg px-3 py-1.5 rounded-full border border-white/20">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                 </svg>
               </div>
             </div>
 
+            {/* Chip Simulation */}
+            <div className="w-12 h-9 bg-gradient-to-br from-amber-200 to-amber-400 rounded-md opacity-90 my-2">
+              <div className="w-full h-full grid grid-cols-3 gap-[1px] p-1">
+                {[...Array(9)].map((_, i) => (
+                  <div key={i} className="bg-amber-500/40 rounded-[1px]"></div>
+                ))}
+              </div>
+            </div>
+
             {/* Middle Section - Points */}
-            <div className="my-4">
-              <p className="text-sm opacity-90 mb-2">موجودی امتیاز</p>
+            <div className="mt-auto mb-4">
+              <p className="text-xs opacity-80 mb-1.5 tracking-wide">موجودی امتیاز</p>
               <div className="flex items-baseline gap-2">
-                <p className="text-5xl font-bold tracking-wider">{user.points?.toLocaleString('fa-IR')}</p>
-                <p className="text-lg opacity-75">امتیاز</p>
+                <p className="text-5xl font-black tracking-tight tabular-nums">{user.points?.toLocaleString('fa-IR')}</p>
+                <p className="text-base opacity-90 font-medium">امتیاز</p>
+              </div>
+              <div className="mt-2 text-xs opacity-70">
+                معادل {(user.points * 1000).toLocaleString('fa-IR')} تومان تخفیف
               </div>
             </div>
 
             {/* Bottom Section */}
-            <div className="flex items-end justify-between">
+            <div className="flex items-end justify-between pt-3 border-t border-white/20">
               <div>
-                <p className="text-xs opacity-75 mb-1">نام دارنده کارت</p>
-                <p className="text-base font-semibold">{user.name}</p>
+                <p className="text-[10px] opacity-70 mb-1 tracking-wide">نام دارنده</p>
+                <p className="text-sm font-bold tracking-wide">{user.name}</p>
               </div>
               <div className="text-left">
-                <p className="text-xs opacity-75 mb-1">شماره عضویت</p>
-                <p className="text-sm font-mono" dir="ltr">#{user.id.toString().padStart(6, '0')}</p>
+                <p className="text-[10px] opacity-70 mb-1 tracking-wide">شماره کارت</p>
+                <p className="text-xs font-mono font-bold tracking-widest" dir="ltr">
+                  {user.id.toString().padStart(6, '0')}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Shine Effect */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0"></div>
+          {/* Holographic Shine */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          {/* Glass Effect Border */}
+          <div className="absolute inset-0 rounded-[24px] border border-white/30"></div>
+        </div>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all hover:scale-105">
+          <div className="text-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mx-auto mb-2">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+            <p className="text-2xl font-bold text-emerald-600">+۵۰</p>
+            <p className="text-[10px] text-slate-500 mt-1">این ماه</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all hover:scale-105">
+          <div className="text-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl flex items-center justify-center mx-auto mb-2">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+              </svg>
+            </div>
+            <p className="text-2xl font-bold text-orange-600">۳</p>
+            <p className="text-[10px] text-slate-500 mt-1">جوایز</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all hover:scale-105">
+          <div className="text-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mx-auto mb-2">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <p className="text-2xl font-bold text-blue-600">۱۲</p>
+            <p className="text-[10px] text-slate-500 mt-1">خرید</p>
+          </div>
         </div>
       </div>
 
       {/* Quick Actions */}
       <div>
-        <h3 className="text-lg font-bold text-slate-800 mb-3">دسترسی سریع</h3>
+        <h3 className="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+          <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
+          دسترسی سریع
+        </h3>
         <div className="grid grid-cols-2 gap-3">
-          <button className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-100">
-            <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 mx-auto">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button className="group bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 rounded-2xl p-5 border border-blue-100 hover:border-blue-200 transition-all hover:shadow-lg">
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform shadow-lg">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
               </svg>
             </div>
-            <p className="text-sm font-medium text-slate-700">جوایز</p>
+            <p className="text-sm font-bold text-slate-800">جوایز من</p>
+            <p className="text-xs text-slate-500 mt-1">۳ جایزه در دسترس</p>
           </button>
 
-          <button className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-100">
-            <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 mx-auto">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          <button className="group bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl p-5 border border-emerald-100 hover:border-emerald-200 transition-all hover:shadow-lg">
+            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform shadow-lg">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
               </svg>
             </div>
-            <p className="text-sm font-medium text-slate-700">تاریخچه</p>
+            <p className="text-sm font-bold text-slate-800">تاریخچه</p>
+            <p className="text-xs text-slate-500 mt-1">۱۲ تراکنش</p>
           </button>
         </div>
       </div>
 
       {/* Recent Activity */}
       <div>
-        <h3 className="text-lg font-bold text-slate-800 mb-3">فعالیت‌های اخیر</h3>
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-          <p className="text-slate-500 text-center py-4">فعالیتی وجود ندارد</p>
+        <h3 className="text-base font-bold text-slate-800 mb-3 flex items-center gap-2">
+          <div className="w-1 h-5 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
+          آخرین فعالیت‌ها
+        </h3>
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <p className="text-sm text-slate-500 font-medium">فعالیتی ثبت نشده</p>
+              <p className="text-xs text-slate-400 mt-1">خریدهای شما اینجا نمایش داده می‌شود</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
