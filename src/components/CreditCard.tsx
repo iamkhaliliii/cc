@@ -195,16 +195,16 @@ export default function CreditCard({
         {/* Left - Flip Action */}
         <button
           onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors group"
+          className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 transition-colors group"
         >
-          <span className="text-sm font-medium">
-            چرخش کارت
+          <span className="text-xs font-medium">
+            {isFlipped ? 'جلو' : 'پشت'}
           </span>
-          <div className="w-10 h-10 bg-slate-100 group-hover:bg-slate-200 rounded-xl flex items-center justify-center transition-colors">
+          <div className="w-7 h-7 bg-slate-50 group-hover:bg-slate-100 rounded-lg flex items-center justify-center transition-colors">
             <img 
               src="/flip.svg" 
               alt="flip"
-              className="w-6 h-6 opacity-60 group-hover:opacity-80"
+              className="w-4 h-4 opacity-40 group-hover:opacity-60"
               style={{ filter: 'grayscale(100%)' }}
             />
           </div>
