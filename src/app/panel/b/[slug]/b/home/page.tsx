@@ -394,206 +394,166 @@ function ScanTab({
 }) {
   return (
     <div className="p-4 space-y-4">
-      {/* Method Selection Menu */}
+      {/* Method Selection Menu - Improved UI */}
       {scanMethod === "menu" && !scannedData && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-bold text-slate-800 mb-4">روش شناسایی مشتری</h2>
-          
-          {/* QR Options */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-            <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="space-y-4">
+          <div className="text-center mb-6">
+            <div className="bg-gradient-to-br from-emerald-100 to-teal-100 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <svg className="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
               </svg>
-              QR Code
-            </h3>
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  setScanMethod("qr-scan");
-                  handleStartCamera();
-                }}
-                className="w-full text-right px-4 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-800">اسکن با دوربین</p>
-                  <p className="text-xs text-slate-500">استفاده از دوربین دستگاه</p>
-                </div>
-              </button>
-              <button
-                onClick={() => {
-                  setScanMethod("qr-upload");
-                  fileInputRef.current?.click();
-                }}
-                className="w-full text-right px-4 py-3 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-800">آپلود عکس QR</p>
-                  <p className="text-xs text-slate-500">انتخاب از گالری</p>
-                </div>
-              </button>
             </div>
+            <h2 className="text-xl font-bold text-slate-800">شناسایی مشتری</h2>
+            <p className="text-sm text-slate-600 mt-1">روش مورد نظر را انتخاب کنید</p>
+          </div>
+          
+          {/* Quick Actions Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => {
+                setScanMethod("qr-scan");
+                handleStartCamera();
+              }}
+              className="bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col items-center gap-3"
+            >
+              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-base">دوربین</p>
+                <p className="text-xs opacity-90 mt-0.5">اسکن QR</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setScanMethod("qr-upload");
+                fileInputRef.current?.click();
+              }}
+              className="bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col items-center gap-3"
+            >
+              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-base">گالری</p>
+                <p className="text-xs opacity-90 mt-0.5">آپلود QR</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setScanMethod("phone")}
+              className="bg-white hover:bg-slate-50 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col items-center gap-3 border-2 border-slate-200"
+            >
+              <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-base text-slate-800">موبایل</p>
+                <p className="text-xs text-slate-500 mt-0.5">شماره تلفن</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setScanMethod("search")}
+              className="bg-white hover:bg-slate-50 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col items-center gap-3 border-2 border-slate-200"
+            >
+              <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-base text-slate-800">جستجو</p>
+                <p className="text-xs text-slate-500 mt-0.5">نام/شماره</p>
+              </div>
+            </button>
           </div>
 
-          {/* Search & Number Options */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-            <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-              </svg>
-              شماره
-            </h3>
-            <div className="space-y-2">
-              <button
-                onClick={() => setScanMethod("search")}
-                className="w-full text-right px-4 py-3 rounded-lg hover:bg-purple-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-800">جستجو</p>
-                  <p className="text-xs text-slate-500">جستجو با نام یا شماره</p>
-                </div>
-              </button>
-              <button
-                onClick={() => setScanMethod("phone")}
-                className="w-full text-right px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-800">شماره موبایل</p>
-                  <p className="text-xs text-slate-500">وارد کردن شماره تلفن</p>
-                </div>
-              </button>
-              <button
-                onClick={() => setScanMethod("card")}
-                className="w-full text-right px-4 py-3 rounded-lg hover:bg-pink-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-800">شماره کارت</p>
-                  <p className="text-xs text-slate-500">شماره کارت باشگاه</p>
-                </div>
-              </button>
-              <button
-                onClick={() => setScanMethod("customer-id")}
-                className="w-full text-right px-4 py-3 rounded-lg hover:bg-cyan-50 transition-colors flex items-center gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-800">شماره مشتری</p>
-                  <p className="text-xs text-slate-500">کد اختصاصی مشتری</p>
-                </div>
-              </button>
-            </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-3">
+            <p className="text-xs text-blue-800 text-center">
+              💡 سریع‌ترین روش: اسکن QR Code مشتری
+            </p>
           </div>
         </div>
       )}
 
       {/* Search Method */}
       {scanMethod === "search" && !scannedData && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
-            ← بازگشت
+        <div className="space-y-4">
+          <button 
+            onClick={() => setScanMethod("menu")} 
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            بازگشت
           </button>
-          <h3 className="text-lg font-bold text-slate-800 mb-4">جستجوی مشتری</h3>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="نام یا شماره مشتری..."
-            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-purple-500 focus:outline-none"
-          />
-          <button className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-lg">
-            جستجو
-          </button>
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800">جستجوی مشتری</h3>
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="نام یا شماره مشتری..."
+              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-purple-500 focus:outline-none text-lg"
+              autoFocus
+            />
+            <button className="w-full mt-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 rounded-xl shadow-lg">
+              جستجو
+            </button>
+          </div>
         </div>
       )}
 
       {/* Phone Method */}
       {scanMethod === "phone" && !scannedData && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
-            ← بازگشت
+        <div className="space-y-4">
+          <button 
+            onClick={() => setScanMethod("menu")} 
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-800 font-medium"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            بازگشت
           </button>
-          <h3 className="text-lg font-bold text-slate-800 mb-4">شماره موبایل</h3>
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="09123456789"
-            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-orange-500 focus:outline-none text-left"
-            dir="ltr"
-          />
-          <button className="w-full mt-4 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg">
-            جستجو
-          </button>
-        </div>
-      )}
-
-      {/* Card Method */}
-      {scanMethod === "card" && !scannedData && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
-            ← بازگشت
-          </button>
-          <h3 className="text-lg font-bold text-slate-800 mb-4">شماره کارت</h3>
-          <input
-            type="text"
-            value={cardNumber}
-            onChange={(e) => setCardNumber(e.target.value)}
-            placeholder="1234-5678-9012-3456"
-            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-pink-500 focus:outline-none text-left"
-            dir="ltr"
-          />
-          <button className="w-full mt-4 bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 rounded-lg">
-            جستجو
-          </button>
-        </div>
-      )}
-
-      {/* Customer ID Method */}
-      {scanMethod === "customer-id" && !scannedData && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <button onClick={() => setScanMethod("menu")} className="text-slate-600 mb-4">
-            ← بازگشت
-          </button>
-          <h3 className="text-lg font-bold text-slate-800 mb-4">شماره مشتری</h3>
-          <input
-            type="text"
-            value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            placeholder="کد مشتری..."
-            className="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:border-cyan-500 focus:outline-none"
-          />
-          <button className="w-full mt-4 bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 rounded-lg">
-            جستجو
-          </button>
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800">شماره موبایل</h3>
+            </div>
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="09123456789"
+              className="w-full px-4 py-4 rounded-xl border-2 border-slate-200 focus:border-orange-500 focus:outline-none text-left text-lg tracking-wider"
+              dir="ltr"
+              autoFocus
+            />
+            <button className="w-full mt-4 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-bold py-4 rounded-xl shadow-lg">
+              جستجو
+            </button>
+          </div>
         </div>
       )}
 
