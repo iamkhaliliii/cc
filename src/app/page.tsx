@@ -8,89 +8,63 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: '#2F01B0' }}>
-      {/* Background Image - Full screen on mobile, contained on desktop */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+      {/* Background Image - Positioned at top */}
+      <div className="fixed top-0 left-0 right-0 h-screen flex items-start justify-center pointer-events-none overflow-hidden">
         <img 
           src="/bg.png" 
           alt="background"
-          className="min-w-full min-h-full md:w-auto md:h-auto md:max-w-4xl object-cover opacity-60"
+          className="w-full h-auto object-cover object-top"
         />
       </div>
 
       {/* Mobile Layout */}
-      <div className="md:hidden relative z-10 min-h-screen flex items-center justify-center p-6">
-        {/* Frosted Glass Card */}
-        <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl rounded-[3rem] p-8 shadow-2xl border border-white/20">
-          {/* Glassmorphic Card Icon */}
-          <div className="flex justify-center mb-12">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/30 to-purple-500/30 blur-3xl"></div>
-              <div className="relative w-48 h-32 bg-white/20 backdrop-blur-xl rounded-3xl border border-white/30 shadow-2xl transform -rotate-12 flex items-center justify-center">
-                {/* Card details - subtle */}
-                <div className="absolute top-6 left-6 w-10 h-8 bg-white/30 rounded"></div>
-                <div className="absolute bottom-6 left-6 right-6 space-y-2">
-                  <div className="h-2 bg-white/20 rounded w-3/4"></div>
-                  <div className="h-2 bg-white/20 rounded w-1/2"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <img src="/lincard.svg" alt="Linkard" className="h-12" />
-          </div>
-
-          {/* Text */}
-          <p className="text-white text-center mb-12 leading-relaxed opacity-90">
-            به سامانه باشگاه مشتریان خوش آمدید
-          </p>
-
-          {/* CTA Button */}
-          <button
-            onClick={() => setShowMenu(true)}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all text-lg"
-          >
-            ورود
-          </button>
+      <div className="md:hidden relative z-10 min-h-screen flex flex-col justify-end pb-12 px-6">
+        {/* Logo - Bottom left aligned */}
+        <div className="mb-8">
+          <img src="/lincard.svg" alt="Linkard" className="h-12" />
         </div>
+
+        {/* Text - Left aligned, more content */}
+        <div className="mb-8 text-right">
+          <p className="text-white text-sm leading-relaxed opacity-90">
+            سیستم جامع مدیریت باشگاه مشتریان
+            <br />
+            برای کسب‌وکارها و مشتریان
+          </p>
+        </div>
+
+        {/* CTA Button - Minimal */}
+        <button
+          onClick={() => setShowMenu(true)}
+          className="w-full py-3 px-6 rounded-full font-medium text-sm shadow-lg active:scale-95 transition-all"
+          style={{ backgroundColor: '#0047FF', color: 'white' }}
+        >
+          ورود
+        </button>
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:flex md:items-center md:justify-center md:min-h-screen md:p-12">
-        <div className="relative max-w-2xl w-full bg-white/10 backdrop-blur-2xl rounded-[3rem] border border-white/20 shadow-2xl p-16">
-          {/* Glassmorphic Card Icon */}
-          <div className="flex justify-center mb-16">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/40 to-purple-500/40 blur-3xl"></div>
-              <div className="relative w-64 h-40 bg-white/20 backdrop-blur-xl rounded-[2.5rem] border border-white/30 shadow-2xl transform -rotate-12 flex items-center justify-center">
-                {/* Card details */}
-                <div className="absolute top-8 left-8 w-14 h-10 bg-white/30 rounded-lg"></div>
-                <div className="absolute bottom-8 left-8 right-8 space-y-3">
-                  <div className="h-3 bg-white/20 rounded w-3/4"></div>
-                  <div className="h-2 bg-white/20 rounded w-1/2"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+      <div className="hidden md:flex md:items-center md:justify-center md:min-h-screen md:p-8">
+        <div className="relative max-w-5xl w-full bg-white/5 backdrop-blur-lg rounded-[3rem] border border-white/20 overflow-hidden shadow-2xl p-20">
           {/* Logo */}
-          <div className="flex justify-center mb-10">
-            <img src="/lincard.svg" alt="Linkard" className="h-16" />
+          <div className="text-center mb-12">
+            <img src="/lincard.svg" alt="Linkard" className="h-20 mx-auto" />
           </div>
 
           {/* Text */}
-          <p className="text-white text-center text-xl mb-12 leading-relaxed opacity-90">
-            به سامانه باشگاه مشتریان خوش آمدید
-          </p>
+          <div className="text-center text-white space-y-4 mb-12">
+            <p className="text-2xl opacity-90">به سامانه باشگاه مشتریان خوش آمدید</p>
+          </div>
 
           {/* CTA */}
-          <button
-            onClick={() => setShowMenu(true)}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-5 px-12 rounded-full text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
-          >
-            ورود
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowMenu(true)}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-6 px-20 rounded-full text-xl shadow-2xl hover:scale-105 transition-all"
+            >
+              ورود
+            </button>
+          </div>
         </div>
       </div>
 
